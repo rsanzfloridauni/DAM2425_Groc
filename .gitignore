@@ -25,4 +25,5 @@ replay_pid*
 /bin/
 
 # Image Files
-/DBConfiguration/HibernatePI/resources/imgs
+/API_REST/SpringbootPI/src/main/resources/static/imgs/
+/API_REST/SpringbootPI/target/classes/static/imgs/
