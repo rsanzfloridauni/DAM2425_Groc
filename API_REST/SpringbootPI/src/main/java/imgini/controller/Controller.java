@@ -2,6 +2,7 @@ package imgini.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -76,6 +77,16 @@ public class Controller {
 		} else {
 			userRepository.save(new User(userDTO.getUsername(), userDTO.getPassword()));
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}
+	}
+
+	@PostMapping("imgini/login")
+	ResponseEntity<Object> login(@RequestBody UserDTO userDTO) {
+		Optional<User> authorized = userRepository.findByUserAndPassword(userDTO.getUsername(), userDTO.getPassword());
+		if (authorized.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
 }
