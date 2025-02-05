@@ -31,25 +31,30 @@ public class Controller {
 
 	@GetMapping("imgini/getImage")
 	public ResponseEntity<Object> viewImages() {
-		List<Imagen> allImages = imagenRepository.findAll();
-
-		if (allImages.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay imágenes en la base de datos.");
-		}
-
-		int totalImages = allImages.size();
-
+		long totalImages = imagenRepository.count();
 		LocalDate today = LocalDate.now();
-		int index = (today.getDayOfMonth() + today.getMonthValue() * 31 + today.getYear() * 365) % totalImages;
+		long index = (today.getDayOfMonth() + today.getMonthValue() * 31 + today.getYear() * 365) % totalImages;
 
-		Imagen selectedImage = allImages.get(index);
+		List<Imagen> selectedImg = imagenRepository.getImgById(index + 1);
 
-		return ResponseEntity.status(HttpStatus.OK).body(selectedImage);
+		if (selectedImg.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay imágenes en la base de datos.");
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(selectedImg.get(0));
+		}
 	}
 
 	@GetMapping("imgini/image")
 	public ResponseEntity<Resource> getImage(@RequestParam(value = "name") String imgName) {
 		Resource resource = new ClassPathResource("static/imgs/" + imgName);
-		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
+		if (resource.isFile()) {
+			if (resource.getFilename().contains("png")) {
+				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(resource);
+			} else {
+				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(resource);
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 }
