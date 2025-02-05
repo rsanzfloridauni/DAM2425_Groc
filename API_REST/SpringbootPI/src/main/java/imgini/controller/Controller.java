@@ -10,10 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import imgini.model.Imagen;
+import imgini.model.User;
+import imgini.model.UserDTO;
 import imgini.repository.AttemptRepository;
 import imgini.repository.ImagenRepository;
 import imgini.repository.UserRepository;
@@ -55,6 +59,23 @@ public class Controller {
 			}
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	@PostMapping("imgini/register")
+	ResponseEntity<Object> register(@RequestBody UserDTO userDTO) {
+		List<User> allUsers = userRepository.findAll();
+		boolean alreadyExists = false;
+		for (User user : allUsers) {
+			if (user.getUsername().equals(userDTO.getUsername())) {
+				alreadyExists = true;
+			}
+		}
+		if (alreadyExists) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		} else {
+			userRepository.save(new User(userDTO.getUsername(), userDTO.getPassword()));
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}
 	}
 }

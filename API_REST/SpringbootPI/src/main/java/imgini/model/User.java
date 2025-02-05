@@ -7,27 +7,37 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 
 	@Id
-	private Integer id;
+	private String _id;
 	private String username;
 	private String password;
 	private Integer points;
 	private String profilePicture;
-	
-	public User(Integer id, String username, String password, Integer points, String profilePicture) {
-		super();
-		this.id = id;
+
+	public User(String _id, String username, String password, Integer points, String profilePicture) {
+		this._id = _id;
 		this.username = username;
 		this.password = password;
 		this.points = points;
 		this.profilePicture = profilePicture;
 	}
 
-	public Integer getId() {
-		return id;
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+		this.points = 0;
+		this.profilePicture = "";
+	}
+	
+	public User() {
+		
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getId() {
+		return _id;
+	}
+
+	public void setId(String id) {
+		this._id = id;
 	}
 
 	public String getUsername() {
