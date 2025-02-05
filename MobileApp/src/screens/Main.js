@@ -1,15 +1,24 @@
-import {
-  StyleSheet,
-  Text,
-  Pressable,
-  View,
-  Image,
-} from 'react-native';
-import { useContext, useState } from 'react';
+import { StyleSheet, Text, Pressable, View, Image } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
+import * as Font from 'expo-font';
 
 export default function Main({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
 
   const toLogin = () => {
     navigation.navigate('Login');
@@ -20,7 +29,7 @@ export default function Main({ navigation }) {
   };
 
   const toApp = () => {
-    navigation.navigate('Drawer');
+    navigation.navigate('LoadingScreen');
   };
 
   return (
@@ -28,13 +37,13 @@ export default function Main({ navigation }) {
       <Image style={styles.image} source={require('../../assets/imgini.png')} />
       <View style={styles.cardContainer}>
         <Pressable onPress={toLogin} style={styles.button}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </Pressable>
         <Pressable onPress={toRegister} style={styles.button}>
-          <Text style={styles.buttonText}>REGISTER</Text>
+          <Text style={styles.buttonText}>Register</Text>
         </Pressable>
         <Pressable onPress={toApp} style={styles.button}>
-          <Text style={styles.buttonText}>PLAY AS GUEST</Text>
+          <Text style={styles.buttonText}>Play As Guest</Text>
         </Pressable>
       </View>
     </View>
@@ -80,7 +89,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   buttonText: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 15,
   },
   image: {

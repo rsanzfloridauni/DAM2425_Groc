@@ -10,9 +10,25 @@ import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
+import * as Font from 'expo-font';
 
 export default function Logout({ navigation }) {
   const { name, setName } = useContext(Context);
+
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,7 +44,7 @@ export default function Logout({ navigation }) {
         <Pressable
           style={styles.button}
           onPress={() => navigation.navigate('Main')}>
-          <Text style={styles.buttonText}>LOG OUT</Text>
+          <Text style={styles.buttonText}>Log Out</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -61,12 +77,14 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   text: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
     margin: 5,
   },
   buttonText: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
     margin: 5,
     color: 'white',

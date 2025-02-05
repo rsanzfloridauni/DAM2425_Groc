@@ -5,6 +5,8 @@ import Main from './src/screens/Main';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import Drawer from './src/screens/Drawer';
+import LoadingScreen from './src/screens/LoadingScreen';
+import CalendarScreen from './src/screens/CalendarScreen';
 
 const Stack = createStackNavigator();
 
@@ -28,7 +30,19 @@ export default function App() {
             component={Register}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="LoadingScreen"
+            component={LoadingScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Drawer" component={Drawer} />
+          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen
+              name="CalendarScreen"
+              component={CalendarScreen}
+              options={{ headerShown: true, headerMode: 'none' }}
+            />
+          </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
