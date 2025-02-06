@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    margin: 10,
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: {
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   image: {
-    width: 220,
+    width: 240,
     height: 220,
     margin: 10,
     marginBottom: 50,

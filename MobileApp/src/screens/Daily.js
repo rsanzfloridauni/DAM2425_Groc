@@ -3,10 +3,10 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  Image,
   TextInput,
+  ImageBackground,
 } from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
+import { TouchableRipple, Snackbar } from 'react-native-paper';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
@@ -18,11 +18,17 @@ import * as Font from 'expo-font';
 export default function Daily({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [image, setImage] = useState(null);
+  const [text, setText] = useState('');
+  const [img, setImg] = useState(null);
+  const [topic] = useState('Cat');
+  const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
+  const [visible, setVisible] = useState(false);
 
   const onPress = useCallback(async () => {
-    const resp = await getDailyImage('http://localhost:8080/imgini/getImage');
-    setImage(resp.link);
+    const resp = await getDailyImage(
+      'https://api.thecatapi.com/v1/images/search?size=full'
+    );
+    setImg(resp[0].url);
   }, []);
 
   useEffect(() => {
@@ -34,11 +40,66 @@ export default function Daily({ navigation }) {
       setFontsLoaded(true);
       onPress();
     };
-
+    revealStart();
     if (!fontsLoaded) {
       loadFontsAndExecute();
     }
-  }, [fontsLoaded, onPress]);
+    if (visible) {
+      const timer = setTimeout(() => setVisible(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [fontsLoaded, onPress, visible]);
+
+  const onPressWin = () => {
+    if (text.trim() !== '') {
+      if (text === topic) {
+        console.log('You won');
+      } else {
+        revealTile();
+        setText('');
+      }
+    } else {
+      setVisible(true);
+    }
+  };
+
+  const revealStart = () => {
+    let visibleTiles = hiddenTiles
+      .map((tile, index) => (tile ? index : null))
+      .filter((index) => index !== null);
+    if (visibleTiles.length > 0) {
+      let randomIndex =
+        visibleTiles[Math.floor(Math.random() * visibleTiles.length)];
+      setHiddenTiles((prevTiles) =>
+        prevTiles.map((tile, index) => (index === randomIndex ? false : tile))
+      );
+    }
+  };
+
+  const revealTile = () => {
+    let visibleTiles = hiddenTiles
+      .map((tile, index) => (tile ? index : null))
+      .filter((index) => index !== null);
+
+    if (visibleTiles.length > 0) {
+      let selectedIndices = [];
+      let attempts = Math.min(2, visibleTiles.length);
+
+      while (selectedIndices.length < attempts) {
+        let randomIndex =
+          visibleTiles[Math.floor(Math.random() * visibleTiles.length)];
+        if (!selectedIndices.includes(randomIndex)) {
+          selectedIndices.push(randomIndex);
+        }
+      }
+
+      setHiddenTiles((prevTiles) =>
+        prevTiles.map((tile, index) =>
+          selectedIndices.includes(index) ? false : tile
+        )
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,20 +108,37 @@ export default function Daily({ navigation }) {
       <Logo />
       <View style={styles.cardContainer}>
         <Text style={styles.title}>Daily Game</Text>
-        <Text style={styles.text}>Topic:</Text>
-        <Image style={styles.image} source={{ uri: image }} />
+        <Text style={styles.text}>Topic: {topic}</Text>
+        <ImageBackground source={{ uri: img }} style={styles.image}>
+          <View style={styles.overlayContainer}>
+            {hiddenTiles.map((visible, index) => (
+              <View
+                key={index}
+                style={[styles.tile, !visible && styles.hiddenTile]}
+              />
+            ))}
+          </View>
+        </ImageBackground>
         <TextInput
+          onChangeText={(text) => setText(text)}
           style={styles.input}
           placeholder="Guess the picture..."
           placeholderTextColor="gray"
+          value={text}
         />
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
-          onPress={() => console.log('Prueba')}
+          onPress={onPressWin}
           style={styles.button}>
           <Text style={styles.text}>Guess</Text>
         </TouchableRipple>
+        <Snackbar
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          duration={3000}>
+          Put some text in first.
+        </Snackbar>
       </View>
     </SafeAreaView>
   );
@@ -116,6 +194,8 @@ const styles = StyleSheet.create({
     height: 220,
     margin: 10,
     marginBottom: 50,
+    backgroundColor: 'blue',
+    position: 'relative',
   },
   button: {
     backgroundColor: '#a0c4ff',
@@ -132,5 +212,20 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 5,
+  },
+  overlayContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  tile: {
+    width: '33.3%',
+    height: '33.3%',
+    backgroundColor: '#a0c4ff',
+  },
+  hiddenTile: {
+    backgroundColor: 'transparent',
   },
 });
