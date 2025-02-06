@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -115,6 +114,7 @@ public class Controller {
 		for (User user : allUsers) {
 			if (user.getUsername().equals(userDTO.getUsername())) {
 				alreadyExists = true;
+				break;
 			}
 		}
 		if (alreadyExists) {
@@ -138,9 +138,9 @@ public class Controller {
 		}
 	}
 
-	@DeleteMapping("imgini/delete/{name}/{password}/{userToken}")
-	public ResponseEntity<String> deleteUser(@PathVariable String name, @PathVariable String password,
-			@PathVariable String userToken) {
+	@DeleteMapping("imgini/delete")
+	public ResponseEntity<String> deleteUser(@RequestParam(value = "name") String name,
+			@RequestParam(value = "password") String password, @RequestParam(value = "token") String userToken) {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
@@ -155,8 +155,9 @@ public class Controller {
 		}
 	}
 
-	@PutMapping("imgini/update/{userToken}")
-	public ResponseEntity<String> updateUser(@PathVariable String userToken, @RequestBody UserPUT updatedUser) {
+	@PutMapping("imgini/update")
+	public ResponseEntity<String> updateUser(@RequestParam(value = "token") String userToken,
+			@RequestBody UserPUT updatedUser) {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
