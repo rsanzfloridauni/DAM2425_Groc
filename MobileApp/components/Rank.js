@@ -1,7 +1,23 @@
-import React from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
+import { useState, useEffect } from 'react';
+import * as Font from 'expo-font';
 
 const Rank = ({ object }) => {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
+
   return (
     <View style={styles.container}>
       <Image source={object.picture} style={styles.image} />
@@ -29,9 +45,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
     fontSize: 16,
     margin: 5,
+    letterSpacing: 2,
   },
 });
 

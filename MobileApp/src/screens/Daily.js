@@ -5,16 +5,40 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  Pressable,
 } from 'react-native';
-import { useState, useEffect, useContext } from 'react';
+import { TouchableRipple } from 'react-native-paper';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
 import Logo from '../../components/Logo';
+import { getDailyImage } from '../services/services';
+import * as Font from 'expo-font';
 
 export default function Daily({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const onPress = useCallback(async () => {
+    const resp = await getDailyImage('http://localhost:8080/imgini/getImage');
+    setImage(resp.link);
+  }, []);
+
+  useEffect(() => {
+    const loadFontsAndExecute = async () => {
+      await Font.loadAsync({
+        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+      onPress();
+    };
+
+    if (!fontsLoaded) {
+      loadFontsAndExecute();
+    }
+  }, [fontsLoaded, onPress]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -22,20 +46,21 @@ export default function Daily({ navigation }) {
       <DrawerButton navigation={navigation} />
       <Logo />
       <View style={styles.cardContainer}>
-        <Text style={styles.title}>DAILY GAME</Text>
+        <Text style={styles.title}>Daily Game</Text>
         <Text style={styles.text}>Topic:</Text>
-        <Image
-          style={styles.image}
-          source={require('../../assets/imgini.png')}
-        />
+        <Image style={styles.image} source={{ uri: image }} />
         <TextInput
           style={styles.input}
           placeholder="Guess the picture..."
           placeholderTextColor="gray"
         />
-        <Pressable style={styles.button}>
-          <Text style={styles.text}>GUESS</Text>
-        </Pressable>
+        <TouchableRipple
+          borderless={false}
+          rippleColor="rgba(51, 73, 255, 0.5)"
+          onPress={() => console.log('Prueba')}
+          style={styles.button}>
+          <Text style={styles.text}>Guess</Text>
+        </TouchableRipple>
       </View>
     </SafeAreaView>
   );
@@ -64,12 +89,14 @@ const styles = StyleSheet.create({
   },
   title: {
     margin: 15,
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans-bold',
     fontSize: 30,
-    fontWeight: 'bold',
+    letterSpacing: 2,
   },
   input: {
     backgroundColor: '#d3a3ff',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     width: '80%',
     height: 35,
     color: 'black',
@@ -79,7 +106,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   text: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
     margin: 5,
   },

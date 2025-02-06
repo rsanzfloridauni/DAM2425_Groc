@@ -5,14 +5,31 @@ import {
   SafeAreaView,
   Image,
   TextInput,
+  Pressable,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import Logo from '../../components/Logo';
+import * as Font from 'expo-font';
 
 export default function Infinite({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,6 +44,11 @@ export default function Infinite({ navigation }) {
         <TextInput style={styles.input} value="Username" />
         <TextInput style={styles.input} value="Password" />
         <Text style={styles.text}>Current streak:</Text>
+        <Pressable
+          onPress={() => navigation.navigate('CalendarScreen')}
+          style={styles.button}>
+          <Text style={styles.text}>Check Your Streak</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -55,9 +77,9 @@ const styles = StyleSheet.create({
   },
   title: {
     margin: 15,
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
     fontSize: 30,
-    fontWeight: 'bold',
   },
   image: {
     width: 120,
@@ -74,10 +96,29 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 5,
     fontSize: 13,
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
   },
   text: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
     margin: 5,
+  },
+  button: {
+    backgroundColor: '#a0c4ff',
+    width: 'auto',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    margin: 10,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
 });

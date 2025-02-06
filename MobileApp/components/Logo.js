@@ -1,4 +1,3 @@
-import React from 'react';
 import { SafeAreaView, Image } from 'react-native';
 
 const Logo = () => {

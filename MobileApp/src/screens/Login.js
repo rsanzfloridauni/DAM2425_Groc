@@ -6,25 +6,41 @@ import {
   View,
   Image,
 } from 'react-native';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import Context from './Context';
+import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const toApp = () => {
-    navigation.navigate('Drawer');
+    navigation.navigate('LoadingScreen');
   };
 
   const toMain = () => {
     navigation.navigate('Main');
   };
 
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
+
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={require('../../assets/imgini.png')} />
       <View style={styles.cardContainer}>
-        <Text style={styles.title}>LOGIN</Text>
+        <Text style={styles.title}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter your username..."
@@ -37,10 +53,10 @@ export default function Login({ navigation }) {
           secureTextEntry={true}
         />
         <Pressable onPress={toApp} style={styles.button}>
-          <Text style={styles.text}>LOGIN</Text>
+          <Text style={styles.text}>Login</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
-          <Text style={styles.text}>GO BACK</Text>
+          <Text style={styles.text}>Go Back</Text>
         </Pressable>
       </View>
     </View>
@@ -71,9 +87,9 @@ const styles = StyleSheet.create({
   },
   title: {
     margin: 15,
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
     fontSize: 30,
-    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#a0c4ff',
@@ -92,7 +108,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   text: {
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
   },
   input: {
@@ -103,6 +120,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     margin: 10,
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
   },
   image: {
     width: 200,

@@ -1,7 +1,6 @@
 import {
   Text,
   View,
-  Button,
   StyleSheet,
   SafeAreaView,
   FlatList,
@@ -12,9 +11,25 @@ import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
 import Logo from '../../components/Logo';
 import Rank from '../../components/Rank';
+import * as Font from 'expo-font';
 
 export default function RANKING({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, [fontsLoaded]);
 
   const data = [
     { picture: require('../../assets/imgini.png'), name: 'Juan', points: 28 },
@@ -30,7 +45,7 @@ export default function RANKING({ navigation }) {
       <UserButton navigation={navigation} />
       <Logo />
       <View style={styles.cardContainer}>
-        <Text style={styles.title}>RANKING</Text>
+        <Text style={styles.title}>Ranking</Text>
         <FlatList
           data={data}
           renderItem={({ item }) => <Rank object={item} />}
@@ -38,7 +53,7 @@ export default function RANKING({ navigation }) {
         />
       </View>
       <View style={styles.cardContainer}>
-        <Text style={styles.title}>YOUR RANK</Text>
+        <Text style={styles.title}>Your Rank</Text>
         <Rank
           object={{
             picture: require('../../assets/imgini.png'),
@@ -73,9 +88,9 @@ const styles = StyleSheet.create({
   },
   title: {
     margin: 10,
-    fontFamily: 'monospace',
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
     fontSize: 30,
-    fontWeight: 'bold',
     alignSelf: 'center',
   },
 });

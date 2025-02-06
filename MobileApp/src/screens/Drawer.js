@@ -1,5 +1,4 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
 import Daily from './Daily';
 import Infinite from './Infinite';
 import Logout from './Logout';
