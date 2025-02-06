@@ -3,10 +3,9 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  TextInput,
   ImageBackground,
 } from 'react-native';
-import { TouchableRipple, Snackbar } from 'react-native-paper';
+import { TouchableRipple, Snackbar, TextInput } from 'react-native-paper';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
     fontFamily: 'alegraya-sans',
     letterSpacing: 2,
     width: '80%',
-    height: 35,
+    height: 45,
     color: 'black',
     paddingHorizontal: 10,
     borderRadius: 5,

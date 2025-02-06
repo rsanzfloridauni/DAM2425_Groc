@@ -1,19 +1,15 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  Pressable,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import * as Font from 'expo-font';
+import { TextInput, IconButton } from 'react-native-paper';
 
 export default function Register({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -51,13 +47,25 @@ export default function Register({ navigation }) {
           style={styles.input}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!passwordVisible}
+          right={
+            <TextInput.Icon
+              name={passwordVisible ? 'eye-off' : 'eye'}
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            />
+          }
         />
         <TextInput
           style={styles.input}
           placeholder="Repeat your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!confirmPasswordVisible}
+          right={
+            <TextInput.Icon
+              name={confirmPasswordVisible ? 'eye-off' : 'eye'}
+              onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+            />
+          }
         />
         <Pressable
           onPress={() => setIsChecked(!isChecked)}

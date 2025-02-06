@@ -1,13 +1,5 @@
-import {
-  Text,
-  View,
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  TextInput,
-  Pressable,
-} from 'react-native';
-import { TouchableRipple } from 'react-native-paper';
+import { Text, View, SafeAreaView, StyleSheet, Image } from 'react-native';
+import { TouchableRipple, TextInput } from 'react-native-paper';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
@@ -33,6 +25,14 @@ export default function Infinite({ navigation }) {
     }
   }, [fontsLoaded]);
 
+  const handleGenerate = () => {
+    console.log('Prueba');
+  };
+
+  const handleGuess = () => {
+    console.log('Prueba');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <UserButton navigation={navigation} />
@@ -44,7 +44,7 @@ export default function Infinite({ navigation }) {
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
-          onPress={() => console.log('Prueba')}
+          onPress={handleGenerate}
           style={styles.button}>
           <Text style={styles.text}>Generate</Text>
         </TouchableRipple>
@@ -54,13 +54,13 @@ export default function Infinite({ navigation }) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Guess the picture..."
+          placeholder="Type your guess here"
           placeholderTextColor="gray"
         />
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
-          onPress={() => console.log('Prueba')}
+          onPress={handleGuess}
           style={styles.button}>
           <Text style={styles.text}>Guess</Text>
         </TouchableRipple>
@@ -99,14 +99,14 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#d3a3ff',
     width: '80%',
-    height: 35,
+    height: 45,
     color: 'black',
     paddingHorizontal: 10,
     borderRadius: 5,
-    margin: 5,
-    fontSize: 13,
+    margin: 10,
     fontFamily: 'alegraya-sans',
     letterSpacing: 2,
+    fontSize: 13,
   },
   text: {
     fontFamily: 'alegraya-sans',

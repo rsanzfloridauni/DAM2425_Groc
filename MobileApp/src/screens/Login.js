@@ -1,18 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  Pressable,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
+import { TextInput } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const toApp = () => {
     navigation.navigate('LoadingScreen');
@@ -45,12 +41,19 @@ export default function Login({ navigation }) {
           style={styles.input}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
+          onChangeText={(text) => setName(text)}
         />
         <TextInput
           style={styles.input}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!passwordVisible}
+          right={
+            <TextInput.Icon
+              name={passwordVisible ? 'eye' : 'eye-off'}
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            />
+          }
         />
         <Pressable onPress={toApp} style={styles.button}>
           <Text style={styles.text}>Login</Text>

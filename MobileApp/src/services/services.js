@@ -15,33 +15,32 @@ export const getDailyImage = async (url) => {
 export const getDataWithToken = async (url, token) => {
   try {
     const response = await fetch(url, {
-      headers: { Authorization: token }
+      headers: { Authorization: token },
     });
 
     if (response) {
       const jsonResponse = await response.json();
       console.log(jsonResponse);
     }
-
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //PUT
 export const putData = async (url, data) => {
   try {
     const response = await fetch(url, {
-      method: "PUT",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
+      method: 'PUT',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data) //convertir a Json el body
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data), //convertir a Json el body
     });
     if (response.ok) {
       const jsonResponse = await response.json();
@@ -50,28 +49,28 @@ export const putData = async (url, data) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //POST
 export const postData = async (url, data) => {
   try {
     const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
       body: JSON.stringify(data),
     });
-    if(response.ok){
+    if (response.ok) {
       const jsonResponse = await response.json();
       getDataWithToken('http://localhost:8080/imgini', jsonResponse.result);
     }
-  } catch(error){
+  } catch (error) {
     console.log(error);
   }
-}
+};
