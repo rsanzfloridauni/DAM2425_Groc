@@ -3,10 +3,13 @@ package imgini.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Document(collection = "user")
 public class User {
 
 	@Id
+	@JsonIgnore
 	private String _id;
 	private String username;
 	private String password;

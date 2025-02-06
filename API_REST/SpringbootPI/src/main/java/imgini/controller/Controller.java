@@ -90,6 +90,22 @@ public class Controller {
 		}
 	}
 
+	@GetMapping("imgini/getUserData")
+	ResponseEntity<Object> getUserData(@RequestParam(value = "name") String userName,
+			@RequestParam(value = "token") String userToken) {
+		if (!Utilities.checkUser(tokens, userToken)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		List<User> user = userRepository.getUserByName(userName);
+		
+		if (user.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(user.get(0));
+		}
+	}
+
 	@PostMapping("imgini/register")
 	ResponseEntity<Object> register(@RequestBody UserDTO userDTO) {
 		List<User> allUsers = userRepository.findAll();
