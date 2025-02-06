@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   image: {
-    width: 200,
+    width: 240,
     height: 200,
     margin: 10,
     marginBottom: 50,

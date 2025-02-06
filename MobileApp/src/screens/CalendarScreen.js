@@ -3,7 +3,7 @@ import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
-export default function App({ navigation }) {
+export default function CalendarScreen({ navigation }) {
   const startDate = '2025-02-10';
   const endDate = '2025-03-04';
   const [fontsLoaded, setFontsLoaded] = useState(false);

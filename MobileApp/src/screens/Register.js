@@ -13,6 +13,7 @@ import * as Font from 'expo-font';
 export default function Register({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -58,7 +59,29 @@ export default function Register({ navigation }) {
           placeholderTextColor="gray"
           secureTextEntry={true}
         />
-        <Pressable onPress={toApp} style={styles.button}>
+        <Pressable
+          onPress={() => setIsChecked(!isChecked)}
+          style={styles.checkboxContainer}>
+          <View style={styles.checkbox}>
+            {isChecked && <Text style={styles.checkmark}>✔️</Text>}
+          </View>
+          <Text style={styles.checkboxLabel}>
+            I accept the{' '}
+            <Text
+              style={styles.textLink}
+              onPress={() => {
+                navigation.navigate('Drawer', {
+                  screen: 'Terms & Conditions',
+                });
+              }}>
+              Terms and Conditions
+            </Text>
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={toApp}
+          style={[styles.button, !isChecked && styles.disabledButton]}
+          disabled={!isChecked}>
           <Text style={styles.text}>Register</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
@@ -118,6 +141,13 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 16,
   },
+  textLink: {
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 1,
+    fontSize: 15,
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
   input: {
     backgroundColor: '#d3a3ff',
     width: '80%',
@@ -130,9 +160,32 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   image: {
-    width: 200,
+    width: 240,
     height: 200,
     margin: 10,
     marginBottom: 20,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 4,
+    marginRight: 10,
+  },
+  checkmark: {
+    fontSize: 16,
+  },
+  checkboxLabel: {
+    fontFamily: 'alegraya-sans',
+    fontSize: 14,
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
   },
 });

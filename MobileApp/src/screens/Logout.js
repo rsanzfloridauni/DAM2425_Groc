@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   image: {
-    width: 200,
+    width: 240,
     height: 200,
     margin: 10,
     marginBottom: 50,

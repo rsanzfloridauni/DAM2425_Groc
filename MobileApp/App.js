@@ -1,5 +1,7 @@
+import React, { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { Provider } from './src/screens/Context';
 import Main from './src/screens/Main';
 import Login from './src/screens/Login';
@@ -11,6 +13,14 @@ import CalendarScreen from './src/screens/CalendarScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+
+    return () => {
+      ScreenOrientation.unlockAsync();
+    };
+  }, []);
+
   return (
     <Provider>
       <NavigationContainer>

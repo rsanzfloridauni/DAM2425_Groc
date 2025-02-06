@@ -13,7 +13,7 @@ import DrawerButton from '../../components/DrawerButton';
 import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
 
-export default function Infinite({ navigation }) {
+export default function User({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -43,7 +43,7 @@ export default function Infinite({ navigation }) {
         />
         <TextInput style={styles.input} value="Username" />
         <TextInput style={styles.input} value="Password" />
-        <Text style={styles.text}>Current streak:</Text>
+        <Text style={styles.text}>Current streak: </Text>
         <Pressable
           onPress={() => navigation.navigate('CalendarScreen')}
           style={styles.button}>

@@ -6,7 +6,7 @@ const Logo = () => {
       <Image
         style={{
           alignSelf: 'center',
-          width: 50,
+          width: 65,
           height: 50,
           marginTop: 40,
         }}

@@ -13,7 +13,7 @@ import Logo from '../../components/Logo';
 import Rank from '../../components/Rank';
 import * as Font from 'expo-font';
 
-export default function RANKING({ navigation }) {
+export default function Ranking({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
