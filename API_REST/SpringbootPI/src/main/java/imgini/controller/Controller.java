@@ -1,8 +1,10 @@
 package imgini.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -19,12 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import imgini.model.Imagen;
 import imgini.model.User;
 import imgini.model.UserDTO;
+import imgini.model.Utilities;
 import imgini.repository.AttemptRepository;
 import imgini.repository.ImagenRepository;
 import imgini.repository.UserRepository;
 
 @RestController
 public class Controller {
+	private ArrayList<String> tokens = new ArrayList<String>();
+
 	@Autowired
 	private AttemptRepository attemptRepository;
 
@@ -35,7 +40,11 @@ public class Controller {
 	private UserRepository userRepository;
 
 	@GetMapping("imgini/getImage")
-	public ResponseEntity<Object> viewImages() {
+	public ResponseEntity<Object> viewImages(@RequestParam(value = "token") String tokenUsuari) {
+		if (!Utilities.checkUser(tokens, tokenUsuari)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
 		long totalImages = imagenRepository.count();
 		LocalDate today = LocalDate.now();
 		long index = (today.getDayOfMonth() + today.getMonthValue() * 31 + today.getYear() * 365) % totalImages;
@@ -50,7 +59,12 @@ public class Controller {
 	}
 
 	@GetMapping("imgini/image")
-	public ResponseEntity<Resource> getImage(@RequestParam(value = "name") String imgName) {
+	public ResponseEntity<Resource> getImage(@RequestParam(value = "name") String imgName,
+			@RequestParam(value = "token") String tokenUsuari) {
+		if (!Utilities.checkUser(tokens, tokenUsuari)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
 		Resource resource = new ClassPathResource("static/imgs/" + imgName);
 		if (resource.isFile()) {
 			if (resource.getFilename().contains("png")) {
@@ -59,6 +73,17 @@ public class Controller {
 				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(resource);
 			}
 		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	@GetMapping("imgini/logout")
+	ResponseEntity<Object> logout(@RequestParam(value = "token") String tokenUsuari) {
+		try {
+			tokens.remove(Utilities.findToken(tokens, tokenUsuari));
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -84,7 +109,10 @@ public class Controller {
 	ResponseEntity<Object> login(@RequestBody UserDTO userDTO) {
 		Optional<User> authorized = userRepository.findByUserAndPassword(userDTO.getUsername(), userDTO.getPassword());
 		if (authorized.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			String uuid = UUID.randomUUID().toString();
+			String token = uuid.split("-")[0];
+			tokens.add(token);
+			return ResponseEntity.status(HttpStatus.OK).body(token);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
