@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import imgini.model.Imagen;
 import imgini.model.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
@@ -15,5 +14,5 @@ public interface UserRepository extends MongoRepository<User, String> {
 	Optional<User> findByUserAndPassword(String username, String password);
 	
 	@Query(value = "{ 'username': ?0 }")
-	List<User> getUserByName(String name);
+	Optional<User> getUserByName(String name);
 }

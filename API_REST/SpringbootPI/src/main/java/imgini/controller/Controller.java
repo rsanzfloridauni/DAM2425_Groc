@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import imgini.model.Imagen;
 import imgini.model.User;
 import imgini.model.UserDTO;
+import imgini.model.UserPUT;
 import imgini.model.Utilities;
 import imgini.repository.AttemptRepository;
 import imgini.repository.ImagenRepository;
@@ -96,13 +98,13 @@ public class Controller {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		
-		List<User> user = userRepository.getUserByName(userName);
-		
-		if (user.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+		Optional<User> user = userRepository.getUserByName(userName);
+
+		if (user.isPresent()) {
+			return ResponseEntity.status(HttpStatus.OK).body(user.get());
 		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(user.get(0));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
@@ -147,6 +149,26 @@ public class Controller {
 		if (user.isPresent()) {
 			userRepository.delete(user.get());
 			tokens.remove(Utilities.findToken(tokens, userToken));
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	@PutMapping("imgini/update/{userToken}")
+	public ResponseEntity<String> updateUser(@PathVariable String userToken, @RequestBody UserPUT updatedUser) {
+		if (!Utilities.checkUser(tokens, userToken)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		Optional<User> userOptional = userRepository.getUserByName(updatedUser.getUsername());
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			user.setPassword(updatedUser.getPassword());
+			user.setPoints(updatedUser.getPoints());
+			user.setProfilePicture(updatedUser.getProfilePicture());
+
+			userRepository.save(user);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
