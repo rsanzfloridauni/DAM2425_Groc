@@ -34,8 +34,12 @@ export default function TermsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
+      {name !== '' && (
+        <>
+          <DrawerButton navigation={navigation} />
+          <UserButton navigation={navigation} />
+        </>
+      )}
       <Logo />
       <View style={styles.cardContainer}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -116,11 +120,13 @@ export default function TermsScreen({ navigation }) {
             contact us at: pixplore@gmail.com.
           </Text>
         </ScrollView>
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.text}>Go Back</Text>
-        </Pressable>
+        {name === '' && (
+          <Pressable
+            style={styles.button}
+            onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.text}>Go Back</Text>
+          </Pressable>
+        )}
       </View>
     </SafeAreaView>
   );

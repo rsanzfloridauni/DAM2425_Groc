@@ -6,7 +6,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { TouchableRipple, Snackbar, TextInput } from 'react-native-paper';
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
@@ -23,15 +23,15 @@ export default function Daily({ navigation }) {
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
 
-  const onPress = useCallback(async () => {
+  const onPress = async () => {
     const resp = await getDailyImage(
       'https://api.thecatapi.com/v1/images/search?size=full'
     );
     setImg(resp[0].url);
-  }, []);
+  };
 
   useEffect(() => {
-    const loadFontsAndExecute = async () => {
+    const loadFonts = async () => {
       await Font.loadAsync({
         'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
         'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
@@ -41,15 +41,18 @@ export default function Daily({ navigation }) {
     };
     revealStart();
     if (!fontsLoaded) {
-      loadFontsAndExecute();
+      loadFonts();
     }
+  }, []);
+
+  useEffect(() => {
     if (visible) {
       const timer = setTimeout(() => setVisible(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [fontsLoaded, onPress, visible]);
+  }, [visible]);
 
-  const onPressWin = () => {
+  const handleGuess = () => {
     if (text.trim() !== '') {
       if (text === topic) {
         console.log('You won');
@@ -118,17 +121,19 @@ export default function Daily({ navigation }) {
             ))}
           </View>
         </ImageBackground>
+        <Text style={styles.text}>Tries left:</Text>
         <TextInput
           onChangeText={(text) => setText(text)}
           style={styles.input}
           placeholder="Guess the picture..."
           placeholderTextColor="gray"
+          placeholderStyle={styles.text}
           value={text}
         />
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
-          onPress={onPressWin}
+          onPress={handleGuess}
           style={styles.button}>
           <Text style={styles.text}>Guess</Text>
         </TouchableRipple>
@@ -172,15 +177,12 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#d3a3ff',
-    fontFamily: 'alegraya-sans',
-    letterSpacing: 2,
     width: '80%',
     height: 45,
     color: 'black',
     paddingHorizontal: 10,
     borderRadius: 5,
     margin: 5,
-    fontSize: 13,
   },
   text: {
     fontFamily: 'alegraya-sans',
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     margin: 10,
-    marginBottom: 50,
+    marginBottom: 20,
     backgroundColor: 'blue',
     position: 'relative',
   },

@@ -8,6 +8,8 @@ export default function Register({ navigation }) {
   const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
@@ -26,7 +28,9 @@ export default function Register({ navigation }) {
   }, [fontsLoaded]);
 
   const toApp = () => {
-    navigation.navigate('LoadingScreen');
+    if (password === confirmPassword) {
+      navigation.navigate('LoadingScreen');
+    }
   };
 
   const toMain = () => {
@@ -39,11 +43,13 @@ export default function Register({ navigation }) {
       <View style={styles.cardContainer}>
         <Text style={styles.title}>Register</Text>
         <TextInput
+        onChangeText={(text) => setName(text)}
           style={styles.input}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
         />
         <TextInput
+          onChangeText={(text) => setPassword(text)}
           style={styles.input}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
@@ -56,6 +62,7 @@ export default function Register({ navigation }) {
           }
         />
         <TextInput
+          onChangeText={(text) => setConfirmPassword(text)}
           style={styles.input}
           placeholder="Repeat your password..."
           placeholderTextColor="gray"

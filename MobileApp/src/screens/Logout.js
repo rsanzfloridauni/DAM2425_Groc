@@ -13,7 +13,7 @@ import UserButton from '../../components/UserButton';
 import * as Font from 'expo-font';
 
 export default function Logout({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { setName, setPicture, setToken } = useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -30,6 +30,13 @@ export default function Logout({ navigation }) {
     }
   }, [fontsLoaded]);
 
+  const onPress = () => {
+    setName('');
+    setToken('');
+    setPicture(null);
+    navigation.navigate('Main');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <DrawerButton navigation={navigation} />
@@ -41,9 +48,7 @@ export default function Logout({ navigation }) {
         />
         <Text style={styles.text}>Leaving already?</Text>
         <Text style={styles.text}>Don't forget to keep your streak!</Text>
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.navigate('Main')}>
+        <Pressable style={styles.button} onPress={onPress}>
           <Text style={styles.buttonText}>Log Out</Text>
         </Pressable>
       </View>

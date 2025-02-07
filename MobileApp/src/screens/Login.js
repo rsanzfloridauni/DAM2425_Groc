@@ -7,6 +7,7 @@ import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [password, setPassword] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -44,6 +45,7 @@ export default function Login({ navigation }) {
           onChangeText={(text) => setName(text)}
         />
         <TextInput
+          onChangeText={(text) => setPassword(text)}
           style={styles.input}
           placeholder="Enter your password..."
           placeholderTextColor="gray"

@@ -21,12 +21,7 @@ const Rank = ({ object, navigation }) => {
   return (
     <Pressable
       style={styles.container}
-      onPress={() =>
-        navigation.navigate('UserViewed', {
-          user: object.name,
-          pic: object.picture,
-        })
-      }>
+      onPress={() => navigation.navigate('User')}>
       <Image source={object.picture} style={styles.image} />
       <Text style={styles.text}>{object.name}</Text>
       <Text style={styles.text}>{object.points} points</Text>

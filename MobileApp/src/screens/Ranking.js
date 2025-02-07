@@ -1,20 +1,15 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  SafeAreaView,
-  FlatList,
-} from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
 import Logo from '../../components/Logo';
 import Rank from '../../components/Rank';
+import RankUser from '../../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, picture } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -29,7 +24,7 @@ export default function Ranking({ navigation }) {
     if (!fontsLoaded) {
       loadFonts();
     }
-  }, [fontsLoaded]);
+  }, []);
 
   const data = [
     { picture: require('../../assets/imgini.png'), name: 'Juan', points: 28 },
@@ -48,20 +43,25 @@ export default function Ranking({ navigation }) {
         <Text style={styles.title}>Ranking</Text>
         <FlatList
           data={data}
-          renderItem={({ item }) => <Rank object={item} />}
-          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <Rank object={item} navigation={navigation} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Your Rank</Text>
-        <Rank
-          object={{
-            picture: require('../../assets/imgini.png'),
-            name: 'Juan',
-            points: 28,
-          }}
-        />
-      </View>
+      {name !== '' && (
+        <View style={styles.cardContainer}>
+          <Text style={styles.title}>Your Rank</Text>
+          <RankUser
+            object={{
+              picture,
+              name,
+              points: 28,
+            }}
+            navigation={navigation}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 }

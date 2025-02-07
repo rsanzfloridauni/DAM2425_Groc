@@ -8,14 +8,18 @@ import {
   Pressable,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
+import { useRoute } from '@react-navigation/native';
 import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
+import UserButton from '../../components/UserButton';
 import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
 
 export default function User({ navigation }) {
-  const { name, setName, picture, setPicture } = useContext(Context);
+  const { name, setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const route = useRoute();
+  const { user, pic } = route.params;
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -34,20 +38,17 @@ export default function User({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <DrawerButton navigation={navigation} />
+      <UserButton navigation={navigation} />
       <Logo />
       <View style={styles.cardContainer}>
         <Text style={styles.title}>User</Text>
-        <Image
-          style={styles.image}
-          source={require('../../assets/imgini.png') /*{ uri: picture }*/}
-        />
-        <TextInput style={styles.input} value={name} />
-        <TextInput style={styles.input} value="Password" />
+        <Image style={styles.image} source={{ pic }} />
+        <TextInput style={styles.input} value={user} />
         <Text style={styles.text}>Current streak: </Text>
         <Pressable
           onPress={() => navigation.navigate('CalendarScreen')}
           style={styles.button}>
-          <Text style={styles.text}>Check Your Streak</Text>
+          <Text style={styles.text}>Check This User's Streak</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -86,9 +87,6 @@ const styles = StyleSheet.create({
     height: 120,
     margin: 10,
     marginBottom: 20,
-    borderRadius: 60,
-    borderColor: 'black',
-    borderWidth: 1,
   },
   input: {
     backgroundColor: '#d3a3ff',

@@ -5,6 +5,7 @@ import Infinite from './Infinite';
 import Logout from './Logout';
 import Ranking from './Ranking';
 import User from './User';
+import UserViewed from './UserViewed';
 import TermsScreen from './TermsScreen';
 import * as Font from 'expo-font';
 
@@ -44,6 +45,11 @@ export default function App() {
       <Drawer.Screen
         name="User"
         component={User}
+        options={{ drawerItemStyle: { display: 'none' } }}
+      />
+      <Drawer.Screen
+        name="UserViewed"
+        component={UserViewed}
         options={{ drawerItemStyle: { display: 'none' } }}
       />
     </Drawer.Navigator>

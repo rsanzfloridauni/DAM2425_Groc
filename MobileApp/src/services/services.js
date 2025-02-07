@@ -40,7 +40,7 @@ export const putData = async (url, data) => {
       },
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-      body: JSON.stringify(data), //convertir a Json el body
+      body: JSON.stringify(data),
     });
     if (response.ok) {
       const jsonResponse = await response.json();
