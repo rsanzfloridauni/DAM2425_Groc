@@ -14,7 +14,8 @@ import * as Font from 'expo-font';
 import { getDailyImage } from '../services/services';
 
 export default function Logout({ navigation }) {
-  const { setName, setPicture, token, setToken } = useContext(Context);
+  const { name, setName, setPicture, token, setToken, theme } =
+    useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -32,37 +33,46 @@ export default function Logout({ navigation }) {
   }, [fontsLoaded]);
 
   const onPress = async () => {
-    
     try {
-      const response = await getDailyImage(`http://localhost:8080/imgini/logout?token=${token}`);
-      
+      const response = await getDailyImage(
+        `http://localhost:8080/imgini/logout?token=${token}`
+      );
+
       if (response) {
-        console.log("Respuesta recibida:", response);
+        console.log('Respuesta recibida:', response);
         setName('');
         setToken('');
         setPicture(null);
         navigation.navigate('Main');
       } else {
-        console.log("No se recibió respuesta válida del servidor.");
+        console.log('No se recibió respuesta válida del servidor.');
       }
     } catch (error) {
-      console.error("Error en la solicitud:", error);
+      console.error('Error en la solicitud:', error);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
-      <View style={styles.textContainer}>
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
+      <View
+        style={[styles.textContainer, { backgroundColor: theme.background }]}>
         <Image
           style={styles.image}
           source={require('../../assets/imgini.png')}
         />
-        <Text style={styles.text}>Leaving already?</Text>
-        <Text style={styles.text}>Don't forget to keep your streak!</Text>
+        <Text style={[styles.text, { color: theme.text }]}>
+          Leaving already?
+        </Text>
+        <Text style={[styles.text, { color: theme.text }]}>
+          Don't forget to keep your streak!
+        </Text>
         <Pressable style={styles.button} onPress={onPress}>
-          <Text style={styles.buttonText}>Log Out</Text>
+          <Text style={[styles.buttonText, { color: theme.text }]}>
+            Log Out
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>

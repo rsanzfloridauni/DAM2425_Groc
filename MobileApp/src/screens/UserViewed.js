@@ -16,7 +16,7 @@ import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
 
 export default function User({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const route = useRoute();
   const { user, pic } = route.params;
@@ -36,19 +36,25 @@ export default function User({ navigation }) {
   }, [fontsLoaded]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
       <UserButton navigation={navigation} />
       <Logo />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>User</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>User</Text>
         <Image style={styles.image} source={{ pic }} />
-        <TextInput style={styles.input} value={user} />
-        <Text style={styles.text}>Current streak: </Text>
+        <Text style={[styles.text, { color: theme.text }]}></Text>
         <Pressable
           onPress={() => navigation.navigate('CalendarScreen')}
           style={styles.button}>
-          <Text style={styles.text}>Check This User's Streak</Text>
+          <Text style={[styles.text, { color: theme.text }]}>
+            Check This User's Streak
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -87,18 +93,6 @@ const styles = StyleSheet.create({
     height: 120,
     margin: 10,
     marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#d3a3ff',
-    width: '80%',
-    height: 35,
-    color: 'black',
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    margin: 5,
-    fontSize: 13,
-    fontFamily: 'alegraya-sans',
-    letterSpacing: 2,
   },
   text: {
     fontFamily: 'alegraya-sans',

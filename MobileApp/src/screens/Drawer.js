@@ -9,9 +9,12 @@ import UserViewed from './UserViewed';
 import TermsScreen from './TermsScreen';
 import Settings from './Settings';
 import * as Font from 'expo-font';
+import { useAppContext } from './Context';
 
 const Drawer = createDrawerNavigator();
+
 export default function App() {
+  const { theme } = useAppContext(); 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -34,8 +37,12 @@ export default function App() {
       screenOptions={{
         headerShown: false,
         drawerPosition: 'right',
+        drawerStyle: {
+          backgroundColor: theme.isDark ? '#333' : '#fff',
+        },
         drawerLabelStyle: {
           fontFamily: 'alegraya-sans-bold',
+          color: theme.isDark ? '#fff' : '#000',
         },
       }}>
       <Drawer.Screen name="Daily" component={Daily} />

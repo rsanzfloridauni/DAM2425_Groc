@@ -3,7 +3,6 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  Image,
   ImageBackground,
 } from 'react-native';
 import { TouchableRipple, TextInput, Snackbar } from 'react-native-paper';
@@ -17,7 +16,7 @@ import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
 
 export default function Infinite({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
@@ -115,13 +114,18 @@ export default function Infinite({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <UserButton navigation={navigation} />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
       <DrawerButton navigation={navigation} />
       <Logo />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Infinite Mode</Text>
-        <Text style={styles.text}>Topic:</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Infinite Mode</Text>
+        <Text style={[styles.text, { color: theme.text }]}>Topic:</Text>
         <DropDownPicker
           open={open}
           value={value}
@@ -132,7 +136,7 @@ export default function Infinite({ navigation }) {
           containerStyle={styles.pickerContainer}
           style={styles.pickerStyle}
           dropDownContainerStyle={styles.dropDownContainerStyle}
-          textStyle={styles.text}
+          textStyle={[styles.text, { color: theme.text }]}
           placeholder="Select a topic"
         />
         <TouchableRipple
@@ -140,7 +144,7 @@ export default function Infinite({ navigation }) {
           rippleColor="rgba(51, 73, 255, 0.5)"
           onPress={handleGenerate}
           style={styles.button}>
-          <Text style={styles.text}>Generate</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Generate</Text>
         </TouchableRipple>
         <ImageBackground source={{ uri: img }} style={styles.image}>
           <View style={styles.overlayContainer}>
@@ -165,7 +169,7 @@ export default function Infinite({ navigation }) {
           rippleColor="rgba(51, 73, 255, 0.5)"
           onPress={handleGuess}
           style={styles.button}>
-          <Text style={styles.text}>Guess</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Guess</Text>
         </TouchableRipple>
         <Snackbar
           visible={visible}

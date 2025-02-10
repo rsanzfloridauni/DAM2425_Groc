@@ -4,21 +4,19 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Context from '../src/screens/Context';
 
 const UserButton = ({ navigation }) => {
-  const { name, picture } = useContext(Context);
+  const { name, picture, theme } = useContext(Context);
 
   const handlePress = () => {
-    if (name !== 'Guest' && name !== '') {
-      navigation.navigate('User');
-    }
+    navigation.navigate('User');
   };
 
   return (
     <View
       style={{
         position: 'absolute',
-        top: Platform.OS === 'ios' ? 60 : 40, 
+        top: Platform.OS === 'ios' ? 60 : 40,
         left: 10,
-        zIndex: 10, 
+        zIndex: 10,
       }}>
       <TouchableOpacity
         onPress={handlePress}
@@ -34,7 +32,11 @@ const UserButton = ({ navigation }) => {
             style={{ width: 50, height: 50, borderRadius: 25 }}
           />
         ) : (
-          <Icon name="person" size={50} color="#000" />
+          <Icon
+            name="person"
+            size={50}
+            color={theme.isDark ? '#fff' : '#000'}
+          />
         )}
       </TouchableOpacity>
     </View>

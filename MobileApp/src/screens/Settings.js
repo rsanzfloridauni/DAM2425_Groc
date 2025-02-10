@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  Switch,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
@@ -13,8 +14,16 @@ import UserButton from '../../components/UserButton';
 import * as Font from 'expo-font';
 
 export default function Settings({ navigation }) {
-  const { name, setName, setPicture, token, setToken } = useContext(Context);
-  const [password, setPassword] = useState('');
+  const {
+    name,
+    setName,
+    setPicture,
+    token,
+    setToken,
+    password,
+    setPassword,
+    theme,
+  } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,15 +47,19 @@ export default function Settings({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
       <View style={styles.textContainer}>
         <Image
           style={styles.image}
           source={require('../../assets/imgini.png')}
         />
-
+        <Text style={[styles.text, { color: theme.text }]}>
+          {theme.isDark ? 'Dark 🌙' : 'Light ☀️'} Theme
+        </Text>
+        <Switch value={theme.isDark} onValueChange={theme.toggleTheme} />
         {name !== 'Guest' && (
           <Pressable style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>Delete Account</Text>

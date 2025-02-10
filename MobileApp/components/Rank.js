@@ -1,8 +1,10 @@
 import { StyleSheet, Text, Image, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
+import { useAppContext } from '../src/screens/Context';
 import * as Font from 'expo-font';
 
 const Rank = ({ object, navigation }) => {
+  const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -20,7 +22,10 @@ const Rank = ({ object, navigation }) => {
 
   return (
     <Pressable
-      style={styles.container}
+      style={[
+        styles.container,
+        { backgroundColor: theme.background, borderColor: theme.text },
+      ]}
       onPress={() =>
         navigation.navigate('UserViewed', {
           user: object.name,
@@ -28,8 +33,10 @@ const Rank = ({ object, navigation }) => {
         })
       }>
       <Image source={object.picture} style={styles.image} />
-      <Text style={styles.text}>{object.name}</Text>
-      <Text style={styles.text}>{object.points} points</Text>
+      <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
+      <Text style={[styles.text, { color: theme.text }]}>
+        {object.points} points
+      </Text>
     </Pressable>
   );
 };
@@ -38,7 +45,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#2f124a',
     borderRadius: 5,

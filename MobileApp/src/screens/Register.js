@@ -2,14 +2,13 @@ import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import * as Font from 'expo-font';
-import { TextInput, IconButton } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 export default function Register({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, password, setPassword, theme } = useContext(Context);
   const [textName, setTextName] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -40,38 +39,44 @@ export default function Register({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Image style={styles.image} source={require('../../assets/imgini.png')} />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Register</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Register</Text>
         <TextInput
           onChangeText={(text) => setTextName(text)}
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
         />
         <TextInput
           onChangeText={(text) => setPassword(text)}
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
           secureTextEntry={!passwordVisible}
           right={
             <TextInput.Icon
               name={passwordVisible ? 'eye-off' : 'eye'}
+              color={theme.isDark ? '#fff' : '#000'}
               onPress={() => setPasswordVisible(!passwordVisible)}
             />
           }
         />
         <TextInput
           onChangeText={(text) => setConfirmPassword(text)}
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Repeat your password..."
           placeholderTextColor="gray"
           secureTextEntry={!confirmPasswordVisible}
           right={
             <TextInput.Icon
               name={confirmPasswordVisible ? 'eye-off' : 'eye'}
+              color={theme.isDark ? '#fff' : '#000'}
               onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
             />
           }
@@ -79,10 +84,10 @@ export default function Register({ navigation }) {
         <Pressable
           onPress={() => setIsChecked(!isChecked)}
           style={styles.checkboxContainer}>
-          <View style={styles.checkbox}>
+          <View style={[styles.checkbox, { borderColor: theme.text }]}>
             {isChecked && <Text style={styles.checkmark}>✔️</Text>}
           </View>
-          <Text style={styles.checkboxLabel}>
+          <Text style={[styles.checkboxLabel, { color: theme.text }]}>
             I accept the{' '}
             <Text
               style={styles.textLink}
@@ -99,10 +104,10 @@ export default function Register({ navigation }) {
           onPress={toApp}
           style={[styles.button, !isChecked && styles.disabledButton]}
           disabled={!isChecked}>
-          <Text style={styles.text}>Register</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Register</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
-          <Text style={styles.text}>Go Back</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
         </Pressable>
       </View>
     </View>

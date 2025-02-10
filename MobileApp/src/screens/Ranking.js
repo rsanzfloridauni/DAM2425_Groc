@@ -9,7 +9,7 @@ import RankUser from '../../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
-  const { name, picture } = useContext(Context);
+  const { name, picture, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,12 +35,17 @@ export default function Ranking({ navigation }) {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
       <Logo />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Ranking</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Ranking</Text>
         <FlatList
           data={data}
           renderItem={({ item }) => (
@@ -49,9 +54,13 @@ export default function Ranking({ navigation }) {
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      {name === 'Guest' && (
-        <View style={styles.cardContainer}>
-          <Text style={styles.title}>Your Rank</Text>
+      {name !== 'Guest' && (
+        <View
+          style={[
+            styles.cardContainer,
+            { backgroundColor: theme.card, shadowColor: theme.shadow },
+          ]}>
+          <Text style={[styles.title, { color: theme.text }]}>Your Rank</Text>
           <RankUser
             object={{
               picture,
