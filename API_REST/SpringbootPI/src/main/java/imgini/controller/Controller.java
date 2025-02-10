@@ -2,12 +2,18 @@ package imgini.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import imgini.model.Imagen;
+import imgini.model.Ranking;
 import imgini.model.User;
 import imgini.model.UserDTO;
 import imgini.model.UserPUT;
+import imgini.model.UserRanking;
 import imgini.model.Utilities;
 import imgini.repository.AttemptRepository;
 import imgini.repository.ImagenRepository;
@@ -105,6 +113,31 @@ public class Controller {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+	}
+
+	@GetMapping("imgini/ranking")
+	ResponseEntity<Object> getRanking(@RequestParam(value = "token") String userToken,
+			@RequestParam(value = "page") int page, @RequestParam(value = "size") int size) {
+		if (!Utilities.checkUser(tokens, userToken)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		if (page <= 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("points").descending());
+		Page<User> usersPage = userRepository.findAll(pageable);
+		ArrayList<UserRanking> usersRanking = new ArrayList<UserRanking>();
+
+		for (User user : usersPage.getContent()) {
+			usersRanking.add(new UserRanking(user.getUsername(), user.getPoints(), user.getProfilePicture()));
+		}
+
+		Ranking ranking = new Ranking(page, usersPage.getTotalPages(), usersPage.hasPrevious(), usersPage.hasNext(),
+				usersRanking);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(ranking);
 	}
 
 	@PostMapping("imgini/register")
