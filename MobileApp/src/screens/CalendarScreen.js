@@ -3,9 +3,8 @@ import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
-export default function CalendarScreen({ navigation, props}) {
-  const startDate = props.startDate;
-  const endDate = props.finishDate;
+export default function CalendarScreen({ navigation, route }) {
+  const { startDate, finishDate } = route.params;
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -27,7 +26,10 @@ export default function CalendarScreen({ navigation, props}) {
     let currentDate = new Date(start);
     let lastDate = new Date(end);
 
-    while (currentDate <= lastDate) {
+    currentDate.setUTCHours(0, 0, 0, 0);
+    lastDate.setUTCHours(0, 0, 0, 0);
+
+    while (currentDate.getTime() <= lastDate.getTime()) {
       const formattedDate = currentDate.toISOString().split('T')[0];
       dates[formattedDate] = {
         color: '#70d7c7',
@@ -35,14 +37,14 @@ export default function CalendarScreen({ navigation, props}) {
         startingDay: formattedDate === start,
         endingDay: formattedDate === end,
       };
-      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
 
     return dates;
   };
 
   const [markedDates, setMarkedDates] = useState(
-    getDateRange(startDate, endDate)
+    getDateRange(startDate, finishDate)
   );
 
   return (
@@ -52,25 +54,25 @@ export default function CalendarScreen({ navigation, props}) {
         markedDates={markedDates}
         markingType={'period'}
         theme={{
-          backgroundColor: '#f5f5f5', 
-          calendarBackground: '#ffffff', 
-          textSectionTitleColor: '#b6c1cd', 
-          selectedDayBackgroundColor: '#ff6347', 
-          selectedDayTextColor: '#ffffff', 
-          todayTextColor: '#ff4500', 
-          dayTextColor: '#2d4150', 
-          textDisabledColor: '#d9e1e8', 
-          dotColor: '#00adf5', 
-          selectedDotColor: '#ffffff', 
-          arrowColor: '#ff4500', 
+          backgroundColor: '#f5f5f5',
+          calendarBackground: '#ffffff',
+          textSectionTitleColor: '#b6c1cd',
+          selectedDayBackgroundColor: '#ff6347',
+          selectedDayTextColor: '#ffffff',
+          todayTextColor: '#ff4500',
+          dayTextColor: '#2d4150',
+          textDisabledColor: '#d9e1e8',
+          dotColor: '#00adf5',
+          selectedDotColor: '#ffffff',
+          arrowColor: '#ff4500',
           monthTextColor: '#4f5d75',
-          indicatorColor: 'blue', 
+          indicatorColor: 'blue',
           textDayFontFamily: 'alegraya-sans',
           textMonthFontFamily: 'alegraya-sans-bold',
           textDayHeaderFontFamily: 'alegraya-sans',
-          textDayFontSize: 16, 
-          textMonthFontSize: 18, 
-          textDayHeaderFontSize: 14, 
+          textDayFontSize: 16,
+          textMonthFontSize: 18,
+          textDayHeaderFontSize: 14,
         }}
       />
       <Pressable onPress={() => navigation.goBack()} style={styles.button}>

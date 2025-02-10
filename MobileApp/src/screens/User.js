@@ -46,7 +46,6 @@ export default function User({ navigation }) {
       .catch((error) => console.error('Error fetching user:', error))
       .finally(() => setLoading(false));
   });
-
   const handleSave = () => {
     setLoading(true);
     fetch('https://api.example.com/user/update', {
@@ -63,7 +62,6 @@ export default function User({ navigation }) {
         setLoading(false);
       });
   };
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -75,7 +73,6 @@ export default function User({ navigation }) {
       setPicture(result.assets[0].uri);
     }
   };
-
   if (loading) {
     return (
       <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />
@@ -111,7 +108,6 @@ export default function User({ navigation }) {
           editable={editing}
           placeholder="PASSWORD"
         />
-        <Text style={styles.text}>Current streak: </Text>
         <Pressable
           onPress={() =>
             navigation.navigate('CalendarScreen', {
@@ -152,6 +148,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     marginTop: '30%',
+  },
+  title: {
+    margin: 15,
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
+    fontSize: 30,
   },
   imageContainer: {
     position: 'relative',

@@ -2,7 +2,7 @@ import { StyleSheet, Text, Image, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
-const Rank = ({ object, navigation }) => {
+const RankUser = ({ object, navigation }) => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Rank;
+export default RankUser;
