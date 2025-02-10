@@ -1,11 +1,11 @@
 <!-- PROJECT LOGO -->
 <p align="center">
   <a href="https://github.com/rsanzfloridauni/DAM2425_Groc">
-    <img src="https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Img/imgini.png?raw=true" alt="Logo" width="300" height="300">
+    <img src="./Documentation/Img/imgini.png" alt="Logo ImGini" width="300" height="300">
   </a>
 </p>
 
-<h1 align="center">InGini</h1>
+<h1 align="center">ImGini</h1>
 
 <!-- ABOUT THE PROJECT -->
 ## About the Project
@@ -24,10 +24,10 @@ Ingini also has a premium subscription for once every three months to help you m
 
 |      Members      |             Contanct               |  Avatar  |
 |-------------------|------------------------------------|----------|
-|  Izan Navarro Lujan    |  iznalu@alumnatflorida.es    |<img src="https://avatars.githubusercontent.com/u/58451072?s=460&u=b8f56b5ba0ee46e829edd76086e733016731b6fd&v=4" alt="drawing" width="50" height="50"/>|
-|  Ausias Martinez Bernal   |  aumabe@alumnatflorida.es     |<img src="https://avatars.githubusercontent.com/u/56550138?s=460&u=46095a4312d0bea92a933108b4a42b402a38b4c9&v=4" alt="drawing" width="50" height="50"/>|
-|  Javier Arellano Alvarez    |  jaaral@alumnatflorida.es  |<img src="https://avatars.githubusercontent.com/u/57366260?s=460&v=4" alt="drawing" width="50" height="50"/>|
-|  Didac Arnau Nicola   |  diarni@alumnatflorida.es    |<img src="https://avatars.githubusercontent.com/u/57366330?s=460&v=4" alt="drawing" width="50" height="50"/>|
+|  Izan Navarro Lujan    |  iznalu@alumnatflorida.es    |<img src="./Documentation/Img/izan.jpg" alt="drawing" width="50" height="50"/>|
+|  Ausias Martinez Bernal   |  aumabe@alumnatflorida.es     |<img src="./Documentation/Img/ausias.jpg" alt="drawing" width="50" height="50"/>|
+|  Javier Arellano Alvarez    |  jaaral@alumnatflorida.es  |<img src="./Documentation/Img/javier.jpg" alt="drawing" width="50" height="50"/>|
+|  Didac Arnau Nicola   |  diarni@alumnatflorida.es    |<img src="./Documentation/Img/didac.jpg" alt="drawing" width="50" height="50"/>|
 
 ## Developed with
 
