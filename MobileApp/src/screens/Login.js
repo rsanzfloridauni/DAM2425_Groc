@@ -6,13 +6,11 @@ import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
-  const { name, setName } = useContext(Context);
-  const [password, setPassword] = useState('');
+  const { name, setName, password, setPassword } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const toApp = () => {
-    
     navigation.navigate('LoadingScreen');
   };
 
@@ -36,7 +34,7 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+      <Image style={styles.image} source={require('../../assets/imgini.png')}/>
       <View style={styles.cardContainer}>
         <Text style={styles.title}>Login</Text>
         <TextInput

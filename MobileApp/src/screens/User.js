@@ -4,9 +4,9 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
-  TextInput,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,13 +14,16 @@ import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
+import { TextInput, IconButton } from 'react-native-paper';
 
 export default function User({ navigation }) {
-  const { name, setName, picture, setPicture } = useContext(Context);
-  const [password, setPassword] = useState('');
+  const { name, setName, picture, setPicture, password, setPassword, token } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [provisionalImage, setProvisionalImage] = useState(null);
+  const [linkStreak, setLinkStreak] = useState(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -36,47 +39,86 @@ export default function User({ navigation }) {
   }, [fontsLoaded]);
 
   useEffect(() => {
-    fetch('https://api.example.com/user')
-      .then((response) => response.json())
-      .then((data) => {
-        setName(data.name);
-        setPicture(data.picture);
-        setPassword(data.password);
-      })
-      .catch((error) => console.error('Error fetching user:', error))
-      .finally(() => setLoading(false));
+    getUserInfo(`http://localhost:8080/imgini/getUserInfo?name=${name}&token=${token}`);
   });
-  const handleSave = () => {
-    setLoading(true);
-    fetch('https://api.example.com/user/update', {
+
+  const getUserInfo = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        setName(result.username);
+        setPassword(result.password);
+        setProvisionalImage(profilePicture);
+        setPicture(profilePicture);
+        setLinkStreak(streakLink);
+      }
+    } catch (error) {
+      return console.log(error);
+    }
+  };
+
+  const handleSave = async () => {
+  setLoading(true);
+  try {
+    const response = await fetch('https://api.example.com/user/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, picture, password }),
-    })
-      .then(() => {
-        setEditing(false);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error updating user:', error);
-        setLoading(false);
-      });
-  };
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
     });
-    if (!result.canceled) {
-      setPicture(result.assets[0].uri);
+
+    if (!response.ok) {
+      throw new Error('Failed to update user');
+    } else{
+      setPicture(provisionalImage);
     }
-  };
+
+    setEditing(false);
+  } catch (error) {
+    console.error('Error updating user:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const pickFromCamera = async () => {
+  let result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 1,
+  });
+  if (!result.canceled) {
+    setProvisionalImage(result.assets[0].uri);
+  }
+};
+
+const pickFromGallery = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 1,
+  });
+  if (!result.canceled) {
+    setProvisionalImage(result.assets[0].uri);
+  }
+};
+
+const pickImage = () => {
+  Alert.alert(
+    "Choose an option",
+    "Would you like to take a new photo or select one from the gallery?",
+    [
+      { text: "Camera", onPress: pickFromCamera }, 
+      { text: "Gallery", onPress: pickFromGallery }, 
+      { text: "Cancel", style: "cancel" },
+    ]
+  );
+};
+
+
   if (loading) {
-    return (
-      <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />
-    );
+    return <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />;
   }
 
   return (
@@ -86,8 +128,8 @@ export default function User({ navigation }) {
       <View style={styles.cardContainer}>
         <Text style={styles.title}>User</Text>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: picture }} />
-          {editing == true && (
+          <Image style={styles.image} source={{ uri: provisionalImage }} />
+          {editing && (
             <Pressable onPress={pickImage} style={styles.imageButton}>
               <Text style={styles.text}>Change</Text>
             </Pressable>
@@ -98,21 +140,26 @@ export default function User({ navigation }) {
           value={name}
           onChangeText={setName}
           editable={editing}
-          placeholder="USERNAME"
+          right={<TextInput.Icon icon="account"/>}
         />
         <TextInput
           style={styles.input}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secureTextEntry={!showPassword}
           editable={editing}
-          placeholder="PASSWORD"
+          right={
+            <TextInput.Icon
+              icon={showPassword ? 'eye-off' : 'eye'}
+              onPress={() => setShowPassword(!showPassword)}
+            />
+          }
         />
         <Pressable
           onPress={() =>
             navigation.navigate('CalendarScreen', {
-              startDate: '2024-01-01',
-              finishDate: '2024-12-31',
+              startDate: '2025-02-08',
+              finishDate: '2025-02-10',
             })
           }
           style={styles.button}>
@@ -121,9 +168,7 @@ export default function User({ navigation }) {
         <Pressable
           onPress={editing ? handleSave : () => setEditing(true)}
           style={styles.button}>
-          <Text style={styles.text}>
-            {editing ? 'Save Changes' : 'Edit Profile'}
-          </Text>
+          <Text style={styles.text}>{editing ? 'Save Changes' : 'Edit Profile'}</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -178,7 +223,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#d3a3ff',
     width: '80%',
-    height: 35,
+    height: 45,
     color: 'black',
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -195,7 +240,6 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#a0c4ff',
-    width: 'auto',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
