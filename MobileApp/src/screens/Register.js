@@ -6,6 +6,7 @@ import { TextInput, IconButton } from 'react-native-paper';
 
 export default function Register({ navigation }) {
   const { name, setName } = useContext(Context);
+  const [textName, setTextName] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [password, setPassword] = useState('');
@@ -29,6 +30,7 @@ export default function Register({ navigation }) {
 
   const toApp = () => {
     if (password === confirmPassword) {
+      setName(textName);
       navigation.navigate('LoadingScreen');
     }
   };
@@ -43,7 +45,7 @@ export default function Register({ navigation }) {
       <View style={styles.cardContainer}>
         <Text style={styles.title}>Register</Text>
         <TextInput
-        onChangeText={(text) => setName(text)}
+          onChangeText={(text) => setTextName(text)}
           style={styles.input}
           placeholder="Enter your username..."
           placeholderTextColor="gray"

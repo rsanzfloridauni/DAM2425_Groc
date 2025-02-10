@@ -4,7 +4,7 @@ import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Main({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { setName } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export default function Main({ navigation }) {
   };
 
   const toApp = () => {
+    setName('Guest');
     navigation.navigate('LoadingScreen');
   };
 

@@ -49,7 +49,7 @@ export default function Ranking({ navigation }) {
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      {name !== '' && (
+      {name === 'Guest' && (
         <View style={styles.cardContainer}>
           <Text style={styles.title}>Your Rank</Text>
           <RankUser

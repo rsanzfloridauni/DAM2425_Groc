@@ -1,4 +1,4 @@
-import { TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { TouchableOpacity, View, Image, Platform } from 'react-native';
 import { useContext } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Context from '../src/screens/Context';
@@ -7,20 +7,27 @@ const UserButton = ({ navigation }) => {
   const { name, picture } = useContext(Context);
 
   const handlePress = () => {
-    if (name !== '') {
+    if (name !== 'Guest' && name !== '') {
       navigation.navigate('User');
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 0 }}>
+    <View
+      style={{
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? 60 : 40, 
+        left: 10,
+        zIndex: 10, 
+      }}>
       <TouchableOpacity
+        onPress={handlePress}
         style={{
-          position: 'absolute',
-          top: 40,
-          left: 10,
-        }}
-        onPress={handlePress}>
+          width: 50,
+          height: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         {picture ? (
           <Image
             source={{ uri: picture }}
@@ -30,7 +37,7 @@ const UserButton = ({ navigation }) => {
           <Icon name="person" size={50} color="#000" />
         )}
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
