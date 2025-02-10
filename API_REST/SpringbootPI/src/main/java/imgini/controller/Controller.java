@@ -165,11 +165,11 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		Optional<User> userOptional = userRepository.getUserByName(updatedUser.getUsername());
+		Optional<User> userOptional = userRepository.getUserByName(updatedUser.getOldName());
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
+			user.setUsername(updatedUser.getNewName());
 			user.setPassword(updatedUser.getPassword());
-			user.setPoints(updatedUser.getPoints());
 			user.setProfilePicture(updatedUser.getProfilePicture());
 
 			userRepository.save(user);

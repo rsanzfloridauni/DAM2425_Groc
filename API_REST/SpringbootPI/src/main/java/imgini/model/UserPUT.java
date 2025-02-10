@@ -1,16 +1,15 @@
 package imgini.model;
 
 public class UserPUT {
-	private String username;
+	private String oldName;
+	private String newName;
 	private String password;
-	private Integer points;
 	private String profilePicture;
 	
-	public UserPUT(String username, String password, Integer points, String profilePicture) {
-		super();
-		this.username = username;
+	public UserPUT(String oldName, String newName, String password, String profilePicture) {
+		this.oldName = oldName;
+		this.newName = newName;
 		this.password = password;
-		this.points = points;
 		this.profilePicture = profilePicture;
 	}
 	
@@ -18,12 +17,20 @@ public class UserPUT {
 		
 	}
 
-	public String getUsername() {
-		return username;
+	public String getOldName() {
+		return oldName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setOldName(String oldName) {
+		this.oldName = oldName;
+	}
+
+	public String getNewName() {
+		return newName;
+	}
+
+	public void setNewName(String newName) {
+		this.newName = newName;
 	}
 
 	public String getPassword() {
@@ -32,14 +39,6 @@ public class UserPUT {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public Integer getPoints() {
-		return points;
-	}
-
-	public void setPoints(Integer points) {
-		this.points = points;
 	}
 
 	public String getProfilePicture() {
