@@ -105,7 +105,7 @@ export default function Daily({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <UserButton navigation={navigation} />
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
       <DrawerButton navigation={navigation} />
       <Logo />
       <View style={styles.cardContainer}>
