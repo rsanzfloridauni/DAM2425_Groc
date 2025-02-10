@@ -7,6 +7,7 @@ import Ranking from './Ranking';
 import User from './User';
 import UserViewed from './UserViewed';
 import TermsScreen from './TermsScreen';
+import Settings from './Settings';
 import * as Font from 'expo-font';
 
 const Drawer = createDrawerNavigator();
@@ -41,6 +42,7 @@ export default function App() {
       <Drawer.Screen name="Infinite" component={Infinite} />
       <Drawer.Screen name="Ranking" component={Ranking} />
       <Drawer.Screen name="Terms & Conditions" component={TermsScreen} />
+      <Drawer.Screen name="Settings" component={Settings} />
       <Drawer.Screen name="Logout" component={Logout} />
       <Drawer.Screen
         name="User"

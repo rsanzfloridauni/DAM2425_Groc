@@ -12,6 +12,7 @@ export default function Login({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const toApp = () => {
+    
     navigation.navigate('LoadingScreen');
   };
 
