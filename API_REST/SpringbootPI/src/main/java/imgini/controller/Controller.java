@@ -68,8 +68,7 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		Resource resource = new ClassPathResource(
-				"static" + System.lineSeparator() + "imgs" + System.lineSeparator() + imgName);
+		Resource resource = new ClassPathResource("static/imgs/" + imgName);
 		if (resource.isFile()) {
 			if (resource.getFilename().contains("png")) {
 				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(resource);
