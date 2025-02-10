@@ -11,9 +11,10 @@ import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import UserButton from '../../components/UserButton';
 import * as Font from 'expo-font';
+import { getDailyImage } from '../services/services';
 
 export default function Logout({ navigation }) {
-  const { setName, setPicture, setToken } = useContext(Context);
+  const { setName, setPicture, token, setToken } = useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -30,11 +31,23 @@ export default function Logout({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const onPress = () => {
-    setName('');
-    setToken('');
-    setPicture(null);
-    navigation.navigate('Main');
+  const onPress = async () => {
+    
+    try {
+      const response = await getDailyImage(`http://localhost:8080/imgini/logout?token=${token}`);
+      
+      if (response) {
+        console.log("Respuesta recibida:", response);
+        setName('');
+        setToken('');
+        setPicture(null);
+        navigation.navigate('Main');
+      } else {
+        console.log("No se recibió respuesta válida del servidor.");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
   };
 
   return (
