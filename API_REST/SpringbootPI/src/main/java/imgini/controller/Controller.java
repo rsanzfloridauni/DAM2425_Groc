@@ -121,7 +121,10 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		} else {
 			userRepository.save(new User(userDTO.getUsername(), userDTO.getPassword()));
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			String uuid = UUID.randomUUID().toString();
+			String token = uuid.split("-")[0];
+			tokens.add(token);
+			return ResponseEntity.status(HttpStatus.OK).body(token);
 		}
 	}
 
