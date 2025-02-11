@@ -1,6 +1,9 @@
 package imgini.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Utilities {
 	public static int findToken(ArrayList<String> tokens, String token) {
@@ -19,5 +22,13 @@ public class Utilities {
 			}
 		}
 		return false;
+	}
+	
+	public static int getStreak(List<Attempt> atts) {
+		LocalDate today = LocalDate.now();
+		int streak = 0;
+		for (Attempt att : atts) {
+			if ()
+		}
 	}
 }

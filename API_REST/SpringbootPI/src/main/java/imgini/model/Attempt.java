@@ -12,16 +12,17 @@ public class Attempt {
 	private Integer imageId;
 	private String attemptDate;
 	private int tries;
-	private boolean success;
 
-	public Attempt(Integer id, Integer userId, Integer imageId, String attemptDate, int tries, boolean success) {
-		super();
+	public Attempt(Integer id, Integer userId, Integer imageId, String attemptDate, int tries) {
 		this.id = id;
 		this.userId = userId;
 		this.imageId = imageId;
 		this.attemptDate = attemptDate;
 		this.tries = tries;
-		this.success = success;
+	}
+	
+	public Attempt() {
+		
 	}
 
 	public Integer getId() {
@@ -62,13 +63,5 @@ public class Attempt {
 
 	public void setTries(int tries) {
 		this.tries = tries;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
 	}
 }

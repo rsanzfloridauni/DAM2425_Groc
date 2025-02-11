@@ -26,10 +26,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import imgini.model.Attempt;
+import imgini.model.AttemptHistory;
+import imgini.model.AttemptInfo;
 import imgini.model.Imagen;
 import imgini.model.Ranking;
 import imgini.model.User;
 import imgini.model.UserDTO;
+import imgini.model.UserInfo;
 import imgini.model.UserPUT;
 import imgini.model.UserRanking;
 import imgini.model.Utilities;
@@ -50,7 +54,7 @@ public class Controller {
 	@Autowired
 	private UserRepository userRepository;
 
-	@GetMapping("imgini/getImage")
+	@GetMapping("imgini/dailyImage")
 	public ResponseEntity<Object> viewImages(@RequestParam(value = "token") String userToken) {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -69,7 +73,7 @@ public class Controller {
 		}
 	}
 
-	@GetMapping("imgini/image")
+	@GetMapping("imgini/getImage")
 	public ResponseEntity<Resource> getImage(@RequestParam(value = "name") String imgName,
 			@RequestParam(value = "token") String userToken) {
 		if (!Utilities.checkUser(tokens, userToken)) {
@@ -121,7 +125,7 @@ public class Controller {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		
+
 		if (page <= 0) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
@@ -136,8 +140,49 @@ public class Controller {
 
 		Ranking ranking = new Ranking(page, usersPage.getTotalPages(), usersPage.hasPrevious(), usersPage.hasNext(),
 				usersRanking);
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(ranking);
+	}
+
+	@GetMapping("imgini/userInfo")
+	ResponseEntity<Object> userInfo(@RequestParam(value = "token") String userToken,
+			@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
+		if (!Utilities.checkUser(tokens, userToken)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		Optional<User> user = userRepository.findByUserAndPassword(username, password);
+		UserInfo userInfo = new UserInfo(username, password, user.get().getProfilePicture(),
+				"http://localhost:8080/imgini/streak?token=" + userToken + "&user=" + username + "&page=1&size=10");
+
+		return ResponseEntity.status(HttpStatus.OK).body(userInfo);
+	}
+
+	@GetMapping("imgini/streak")
+	ResponseEntity<Object> streak(@RequestParam(value = "token") String userToken,
+			@RequestParam(value = "username") String username, @RequestParam(value = "page") int page,
+			@RequestParam(value = "size") int size) {
+		if (!Utilities.checkUser(tokens, userToken)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
+		if (page <= 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("attemptDate").descending());
+		Page<Attempt> attemptPage = attemptRepository.findAll(pageable);
+		ArrayList<AttemptInfo> attempts = new ArrayList<AttemptInfo>();
+
+		for (Attempt att : attemptPage.getContent()) {
+			List<Imagen> selectedImg = imagenRepository.getImgById(att.getImageId() + 1);
+			attempts.add(new AttemptInfo(selectedImg.get(0).getImageName(), att.getAttemptDate(), att.getTries()));
+		}
+
+		AttemptHistory attHistory = new AttemptHistory(page, attemptPage.getTotalPages(), attemptPage.hasPrevious(), attemptPage.hasNext(),
+				5, attempts);
+
+		return ResponseEntity.status(HttpStatus.OK).body(attHistory);		
 	}
 
 	@PostMapping("imgini/register")
