@@ -80,13 +80,13 @@ export default function Daily({ navigation }) {
   const handleGuess = () => {
     if (text.trim() !== '' && tries > 0) {
       if (text === topic) {
-        navigation.navigate('VictoryScreen');
+        navigation.navigate('VictoryScreen', { tries: tries });
       } else {
         setTries(tries - 1);
         revealTile();
         setText('');
         if (tries <= 1) {
-          console.log('You lost');
+          navigation.navigate('LoseScreen');
         }
       }
     } else {

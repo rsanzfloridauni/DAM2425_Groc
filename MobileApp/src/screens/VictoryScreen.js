@@ -9,22 +9,12 @@ import {
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
 import * as Font from 'expo-font';
 
-export default function Settings({ navigation }) {
-  const {
-    name,
-    setName,
-    setPicture,
-    token,
-    setToken,
-    password,
-    setPassword,
-    theme,
-  } = useContext(Context);
+export default function VictoryScreen({ route, navigation }) {
+  const { name, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const { tries } = route.params;
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -39,33 +29,21 @@ export default function Settings({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const onPress = () => {
-    setName('');
-    setToken('');
-    setPicture(null);
-    navigation.navigate('Main');
-  };
-
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}>
-      <DrawerButton navigation={navigation} />
-      {name !== 'Guest' && <UserButton navigation={navigation} />}
-      <View style={styles.textContainer}>
-        <Image
-          style={styles.image}
-          source={require('../../assets/imgini.png')}
-        />
-        <Text style={[styles.text, { color: theme.text }]}>
-          {theme.isDark ? 'Dark 🌙' : 'Light ☀️'} Theme
-        </Text>
-        <Switch value={theme.isDark} onValueChange={theme.toggleTheme} />
-        {name !== 'Guest' && (
-          <Pressable style={styles.button} onPress={onPress}>
-            <Text style={styles.buttonText}>Delete Account</Text>
-          </Pressable>
-        )}
-      </View>
+      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+      <Text style={[styles.title, { color: theme.text }]}>
+        Congratulations, {name}!
+      </Text>
+      <Text style={[styles.text, { color: theme.text }]}>
+        You beat the game with {tries} tries left!
+      </Text>
+      <Pressable
+        onPress={() => navigation.goBack()}
+        style={[styles.button, { shadowColor: theme.shadow }]}>
+        <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -73,19 +51,23 @@ export default function Settings({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  textContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  title: {
+    margin: 15,
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
+    fontSize: 30,
+    textAlign: 'center',
+  },
   button: {
-    backgroundColor: 'red',
+    backgroundColor: 'green',
     width: 'auto',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    margin: 10,
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: {
@@ -100,13 +82,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 16,
     margin: 5,
-  },
-  buttonText: {
-    fontFamily: 'alegraya-sans',
-    letterSpacing: 2,
-    fontSize: 16,
-    margin: 5,
-    color: 'white',
   },
   image: {
     width: 240,
