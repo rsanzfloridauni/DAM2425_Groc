@@ -15,7 +15,7 @@ import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
 
 export default function Daily({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
@@ -104,13 +104,18 @@ export default function Daily({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       {name !== 'Guest' && <UserButton navigation={navigation} />}
       <DrawerButton navigation={navigation} />
       <Logo />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Daily Game</Text>
-        <Text style={styles.text}>Topic: {topic}</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Daily Game</Text>
+        <Text style={[styles.text, { color: theme.text }]}>Topic: {topic}</Text>
         <ImageBackground source={{ uri: img }} style={styles.image}>
           <View style={styles.overlayContainer}>
             {hiddenTiles.map((visible, index) => (
@@ -121,7 +126,7 @@ export default function Daily({ navigation }) {
             ))}
           </View>
         </ImageBackground>
-        <Text style={styles.text}>Tries left:</Text>
+        <Text style={[styles.text, { color: theme.text }]}>Tries left:</Text>
         <TextInput
           onChangeText={(text) => setText(text)}
           style={styles.input}
@@ -135,7 +140,7 @@ export default function Daily({ navigation }) {
           rippleColor="rgba(51, 73, 255, 0.5)"
           onPress={handleGuess}
           style={styles.button}>
-          <Text style={styles.text}>Guess</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Guess</Text>
         </TouchableRipple>
         <Snackbar
           visible={visible}

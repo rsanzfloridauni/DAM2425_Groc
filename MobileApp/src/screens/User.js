@@ -17,7 +17,16 @@ import * as Font from 'expo-font';
 import { TextInput, IconButton } from 'react-native-paper';
 
 export default function User({ navigation }) {
-  const { name, setName, picture, setPicture, password, setPassword, token } = useContext(Context);
+  const {
+    name,
+    setName,
+    picture,
+    setPicture,
+    password,
+    setPassword,
+    token,
+    theme,
+  } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -39,9 +48,10 @@ export default function User({ navigation }) {
   }, [fontsLoaded]);
 
   useEffect(() => {
-    getUserInfo(`http://localhost:8080/imgini/getUserInfo?name=${name}&token=${token}`);
+    getUserInfo(
+      `http://localhost:8080/imgini/getUserInfo?name=${name}&token=${token}`
+    );
   });
-
   const getUserInfo = async (url) => {
     try {
       const response = await fetch(url);
@@ -57,76 +67,76 @@ export default function User({ navigation }) {
       return console.log(error);
     }
   };
-
   const handleSave = async () => {
-  setLoading(true);
-  try {
-    const response = await fetch('https://api.example.com/user/update', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, picture, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update user');
-    } else{
-      setPicture(provisionalImage);
+    setLoading(true);
+    try {
+      const response = await fetch('https://api.example.com/user/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, picture, password }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      } else {
+        setPicture(provisionalImage);
+      }
+      setEditing(false);
+    } catch (error) {
+      console.error('Error updating user:', error);
+    } finally {
+      setLoading(false);
     }
-
-    setEditing(false);
-  } catch (error) {
-    console.error('Error updating user:', error);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
   const pickFromCamera = async () => {
-  let result = await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    aspect: [1, 1],
-    quality: 1,
-  });
-  if (!result.canceled) {
-    setProvisionalImage(result.assets[0].uri);
-  }
-};
-
-const pickFromGallery = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [1, 1],
-    quality: 1,
-  });
-  if (!result.canceled) {
-    setProvisionalImage(result.assets[0].uri);
-  }
-};
-
-const pickImage = () => {
-  Alert.alert(
-    "Choose an option",
-    "Would you like to take a new photo or select one from the gallery?",
-    [
-      { text: "Camera", onPress: pickFromCamera }, 
-      { text: "Gallery", onPress: pickFromGallery }, 
-      { text: "Cancel", style: "cancel" },
-    ]
-  );
-};
-
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setProvisionalImage(result.assets[0].uri);
+    }
+  };
+  const pickFromGallery = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setProvisionalImage(result.assets[0].uri);
+    }
+  };
+  const pickImage = () => {
+    Alert.alert(
+      'Choose an option',
+      'Would you like to take a new photo or select one from the gallery?',
+      [
+        { text: 'Camera', onPress: pickFromCamera },
+        { text: 'Gallery', onPress: pickFromGallery },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
+  };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />;
+    return (
+      <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />
+    );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
       <Logo />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>User</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>User</Text>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={{ uri: provisionalImage }} />
           {editing && (
@@ -140,7 +150,7 @@ const pickImage = () => {
           value={name}
           onChangeText={setName}
           editable={editing}
-          right={<TextInput.Icon icon="account"/>}
+          right={<TextInput.Icon icon="account" />}
         />
         <TextInput
           style={styles.input}
@@ -151,6 +161,7 @@ const pickImage = () => {
           right={
             <TextInput.Icon
               icon={showPassword ? 'eye-off' : 'eye'}
+              color={theme.isDark ? '#fff' : '#000'}
               onPress={() => setShowPassword(!showPassword)}
             />
           }
@@ -163,12 +174,16 @@ const pickImage = () => {
             })
           }
           style={styles.button}>
-          <Text style={styles.text}>Check Your Streak</Text>
+          <Text style={[styles.text, { color: theme.text }]}>
+            Check Your Streak
+          </Text>
         </Pressable>
         <Pressable
           onPress={editing ? handleSave : () => setEditing(true)}
           style={styles.button}>
-          <Text style={styles.text}>{editing ? 'Save Changes' : 'Edit Profile'}</Text>
+          <Text style={[styles.text, { color: theme.text }]}>
+            {editing ? 'Save Changes' : 'Edit Profile'}
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>

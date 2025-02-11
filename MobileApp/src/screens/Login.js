@@ -34,7 +34,7 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')}/>
+      <Image style={styles.image} source={require('../../assets/imgini.png')} />
       <View style={styles.cardContainer}>
         <Text style={styles.title}>Login</Text>
         <TextInput
