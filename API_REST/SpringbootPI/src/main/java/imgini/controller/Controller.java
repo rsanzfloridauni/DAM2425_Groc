@@ -103,22 +103,6 @@ public class Controller {
 		}
 	}
 
-	@GetMapping("imgini/getUserData")
-	ResponseEntity<Object> getUserData(@RequestParam(value = "name") String userName,
-			@RequestParam(value = "token") String userToken) {
-		if (!Utilities.checkUser(tokens, userToken)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-
-		Optional<User> user = userRepository.getUserByName(userName);
-
-		if (user.isPresent()) {
-			return ResponseEntity.status(HttpStatus.OK).body(user.get());
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-	}
-
 	@GetMapping("imgini/ranking")
 	ResponseEntity<Object> getRanking(@RequestParam(value = "token") String userToken,
 			@RequestParam(value = "page") int page, @RequestParam(value = "size") int size) {
@@ -146,14 +130,14 @@ public class Controller {
 
 	@GetMapping("imgini/userInfo")
 	ResponseEntity<Object> userInfo(@RequestParam(value = "token") String userToken,
-			@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
+			@RequestParam(value = "username") String username) {
 		if (!Utilities.checkUser(tokens, userToken)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		Optional<User> user = userRepository.findByUserAndPassword(username, password);
-		UserInfo userInfo = new UserInfo(username, password, user.get().getProfilePicture(),
-				"http://localhost:8080/imgini/streak?token=" + userToken + "&user=" + username + "&page=1&size=10");
+		Optional<User> user = userRepository.getUserByName(username);
+		UserInfo userInfo = new UserInfo(username, user.get().getPassword(), user.get().getProfilePicture(),
+				"http://localhost:8080/imgini/streak?token=" + userToken + "&username=" + username + "&page=1&size=10");
 
 		return ResponseEntity.status(HttpStatus.OK).body(userInfo);
 	}
@@ -169,9 +153,10 @@ public class Controller {
 		if (page <= 0) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		
+
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("attemptDate").descending());
 		Page<Attempt> attemptPage = attemptRepository.findAll(pageable);
+		List<Attempt> allAttempts = attemptRepository.findAll();
 		ArrayList<AttemptInfo> attempts = new ArrayList<AttemptInfo>();
 
 		for (Attempt att : attemptPage.getContent()) {
@@ -179,10 +164,10 @@ public class Controller {
 			attempts.add(new AttemptInfo(selectedImg.get(0).getImageName(), att.getAttemptDate(), att.getTries()));
 		}
 
-		AttemptHistory attHistory = new AttemptHistory(page, attemptPage.getTotalPages(), attemptPage.hasPrevious(), attemptPage.hasNext(),
-				5, attempts);
+		AttemptHistory attHistory = new AttemptHistory(page, attemptPage.getTotalPages(), attemptPage.hasPrevious(),
+				attemptPage.hasNext(), Utilities.getStreak(allAttempts), attempts);
 
-		return ResponseEntity.status(HttpStatus.OK).body(attHistory);		
+		return ResponseEntity.status(HttpStatus.OK).body(attHistory);
 	}
 
 	@PostMapping("imgini/register")

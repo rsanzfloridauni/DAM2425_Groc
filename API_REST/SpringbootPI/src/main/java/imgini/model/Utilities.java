@@ -26,9 +26,16 @@ public class Utilities {
 	
 	public static int getStreak(List<Attempt> atts) {
 		LocalDate today = LocalDate.now();
+		LocalDate attemptDate;
 		int streak = 0;
 		for (Attempt att : atts) {
-			if ()
+			attemptDate = LocalDate.parse(att.getAttemptDate());
+			if (!today.equals(attemptDate)) {
+				break;
+			}
+			streak++;
+			today.minusDays(1);
 		}
+		return streak;
 	}
 }
