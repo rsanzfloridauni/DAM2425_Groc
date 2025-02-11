@@ -15,19 +15,44 @@ import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
 
 export default function Daily({ navigation }) {
-  const { name, setName, theme } = useContext(Context);
+  const { name, token, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
   const [topic] = useState('Cat');
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
+  const [tries, setTries] = useState(4);
 
   const onPress = async () => {
-    const resp = await getDailyImage(
-      'https://api.thecatapi.com/v1/images/search?size=full'
-    );
-    setImg(resp[0].url);
+    try {
+      const dailyResponse = await fetch(
+        `https://tu-api.com/imgini/dailyImage?token=${token}`
+      );
+
+      if (!dailyResponse.ok) {
+        throw new Error('Error al obtener la imagen diaria');
+      }
+
+      const dailyData = await dailyResponse.json();
+      const imageName = new URL(dailyData.link).searchParams.get('name');
+
+      if (!imageName) {
+        throw new Error('No se pudo extraer el nombre de la imagen');
+      }
+
+      const imageResponse = await fetch(
+        `https://tu-api.com/imgini/getImage?name=${imageName}&token=${token}`
+      );
+
+      if (!imageResponse.ok) {
+        throw new Error('Error al obtener la imagen');
+      }
+
+      setImg(imageResponse.url);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   useEffect(() => {
@@ -53,12 +78,16 @@ export default function Daily({ navigation }) {
   }, [visible]);
 
   const handleGuess = () => {
-    if (text.trim() !== '') {
+    if (text.trim() !== '' && tries > 0) {
       if (text === topic) {
-        console.log('You won');
+        navigation.navigate('VictoryScreen');
       } else {
+        setTries(tries - 1);
         revealTile();
         setText('');
+        if (tries <= 1) {
+          console.log('You lost');
+        }
       }
     } else {
       setVisible(true);
@@ -126,7 +155,9 @@ export default function Daily({ navigation }) {
             ))}
           </View>
         </ImageBackground>
-        <Text style={[styles.text, { color: theme.text }]}>Tries left:</Text>
+        <Text style={[styles.text, { color: theme.text }]}>
+          Tries left: {tries}
+        </Text>
         <TextInput
           onChangeText={(text) => setText(text)}
           style={styles.input}

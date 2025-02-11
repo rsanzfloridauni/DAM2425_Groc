@@ -4,7 +4,8 @@ import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Main({ navigation }) {
-  const { name, setName, password, setPassword, theme } = useContext(Context);
+  const { name, setName, password, setPassword, setToken, theme } =
+    useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -28,9 +29,30 @@ export default function Main({ navigation }) {
     navigation.navigate('Register');
   };
 
-  const toApp = () => {
+  const toApp = async () => {
     setName('Guest');
-    navigation.navigate('LoadingScreen');
+    setPassword('');
+
+    try {
+      const response = await fetch('http://44.199.39.144:8080/imgini/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: 'Guest', password: '' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la autenticación');
+      }
+
+      const token = await response.text();
+      setToken(token);
+
+      navigation.navigate('LoadingScreen');
+    } catch (error) {
+      console.error('Error en la autenticación:', error);
+    }
   };
 
   return (

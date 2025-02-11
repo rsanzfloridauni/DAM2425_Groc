@@ -9,6 +9,8 @@ import Register from './src/screens/Register';
 import Drawer from './src/screens/Drawer';
 import LoadingScreen from './src/screens/LoadingScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
+import VictoryScreen from './src/screens/VictoryScreen';
+import LoseScreen from './src/screens/LoseScreen';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +52,16 @@ export default function App() {
             <Stack.Screen
               name="CalendarScreen"
               component={CalendarScreen}
+              options={{ headerShown: true, headerMode: 'none' }}
+            />
+            <Stack.Screen
+              name="VictoryScreen"
+              component={VictoryScreen}
+              options={{ headerShown: true, headerMode: 'none' }}
+            />
+            <Stack.Screen
+              name="LoseScreen"
+              component={LoseScreen}
               options={{ headerShown: true, headerMode: 'none' }}
             />
           </Stack.Group>

@@ -16,7 +16,7 @@ import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
 
 export default function User({ navigation }) {
-  const { theme } = useContext(Context);
+  const { name, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const route = useRoute();
   const { user, pic } = route.params;
@@ -39,16 +39,15 @@ export default function User({ navigation }) {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
       <Logo />
       <View
         style={[
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
         ]}>
-        <Text style={[styles.title, { color: theme.text }]}>User</Text>
+        <Text style={[styles.title, { color: theme.text }]}>{user}</Text>
         <Image style={styles.image} source={{ pic }} />
-        <Text style={[styles.text, { color: theme.text }]}></Text>
         <Pressable
           onPress={() => navigation.navigate('CalendarScreen')}
           style={styles.button}>

@@ -87,10 +87,9 @@ export default function User({ navigation }) {
     } catch (error) {
       return console.log(error);
     }
-  }
+  };
 
   const handleSave = async () => {
-
     try {
       const response = await fetch(
         `http://localhost:8080/imgini/update?token=${token}`,
@@ -110,7 +109,7 @@ export default function User({ navigation }) {
         Alert.alert('Failed to update user');
       } else {
         setPicture(provisionalImage);
-        Alert.alert("DATOS ACTUALIZADOS!")
+        Alert.alert('DATOS ACTUALIZADOS!');
       }
 
       setEditing(false);

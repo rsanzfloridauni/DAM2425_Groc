@@ -1,17 +1,43 @@
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
-  const { name, setName, password, setPassword } = useContext(Context);
+  const { name, setName, password, setPassword, setToken } =
+    useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const toApp = () => {
-    navigation.navigate('LoadingScreen');
+  const toApp = async () => {
+    if (!name || !password) {
+      console.error(
+        'El nombre de usuario y la contraseña no pueden estar vacíos.'
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch('http://44.199.39.144:8080/imgini/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: name, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la autenticación');
+      }
+
+      const token = await response.text();
+      setToken(token);
+
+      navigation.navigate('LoadingScreen');
+    } catch (error) {
+      console.error('Error en la autenticación:', error);
+    }
   };
 
   const toMain = () => {

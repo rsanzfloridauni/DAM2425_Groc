@@ -5,7 +5,8 @@ import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
 
 export default function Register({ navigation }) {
-  const { name, setName, password, setPassword, theme } = useContext(Context);
+  const { name, setName, password, setPassword, setToken, theme } =
+    useContext(Context);
   const [textName, setTextName] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -27,10 +28,43 @@ export default function Register({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const toApp = () => {
+  const toApp = async () => {
+    if (!textName || !password) {
+      console.error(
+        'El nombre de usuario y la contraseña no pueden estar vacíos.'
+      );
+      return;
+    }
     if (password === confirmPassword) {
       setName(textName);
-      navigation.navigate('LoadingScreen');
+      try {
+        const response = await fetch(
+          'http://44.199.39.144:8080/imgini/register',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: textName, password }),
+          }
+        );
+
+        const responseText = await response.text();
+        console.log('Server response:', response.status, responseText);
+
+        if (!response.ok) {
+          throw new Error(
+            `Error en la autenticación: ${response.status} - ${responseText}`
+          );
+        }
+
+        setToken(responseText);
+        navigation.navigate('LoadingScreen');
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log('Error: Las contraseñas no coinciden');
     }
   };
 
