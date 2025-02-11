@@ -25,6 +25,7 @@ export default function Infinite({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [tries, setTries] = useState(4);
   const [items, setItems] = useState([
     { label: 'Opción 1', value: 'opcion1' },
     { label: 'Opción 2', value: 'opcion2' },
@@ -44,6 +45,7 @@ export default function Infinite({ navigation }) {
       generateImg();
       revealStart();
       setText('');
+      setTries(4);
     }
   };
 
@@ -62,12 +64,16 @@ export default function Infinite({ navigation }) {
   }, []);
 
   const handleGuess = () => {
-    if (text.trim() !== '') {
+    if (text.trim() !== '' && tries > 0) {
       if (text === topic) {
-        console.log('You won');
+        navigation.navigate('VictoryScreen', { tries: tries });
       } else {
+        setTries(tries - 1);
         revealTile();
         setText('');
+        if (tries <= 1) {
+          navigation.navigate('LoseScreen');
+        }
       }
     } else {
       setVisible(true);

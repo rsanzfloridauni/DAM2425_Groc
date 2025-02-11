@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import * as Font from 'expo-font';
@@ -30,9 +30,7 @@ export default function Register({ navigation }) {
 
   const toApp = async () => {
     if (!textName || !password) {
-      console.error(
-        'El nombre de usuario y la contraseña no pueden estar vacíos.'
-      );
+      Alert.alert('Neither the username nor the password can be empty.');
       return;
     }
     if (password === confirmPassword) {
@@ -64,7 +62,7 @@ export default function Register({ navigation }) {
         console.error(error);
       }
     } else {
-      console.log('Error: Las contraseñas no coinciden');
+      Alert.alert('Passwords must be the same.');
     }
   };
 

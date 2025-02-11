@@ -1,20 +1,18 @@
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
 import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Login({ navigation }) {
-  const { name, setName, password, setPassword, setToken } =
+  const { name, setName, password, setPassword, theme, setToken } =
     useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const toApp = async () => {
     if (!name || !password) {
-      console.error(
-        'El nombre de usuario y la contraseña no pueden estar vacíos.'
-      );
+      Alert.alert('Neither the username nor the password can be empty.');
       return;
     }
 
@@ -59,34 +57,39 @@ export default function Login({ navigation }) {
   }, [fontsLoaded]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Image style={styles.image} source={require('../../assets/imgini.png')} />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Login</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Login</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
           onChangeText={(text) => setName(text)}
         />
         <TextInput
           onChangeText={(text) => setPassword(text)}
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
           secureTextEntry={!passwordVisible}
           right={
             <TextInput.Icon
               name={passwordVisible ? 'eye' : 'eye-off'}
+              color={theme.isDark ? '#fff' : '#000'}
               onPress={() => setPasswordVisible(!passwordVisible)}
             />
           }
         />
         <Pressable onPress={toApp} style={styles.button}>
-          <Text style={styles.text}>Login</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Login</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
-          <Text style={styles.text}>Go Back</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
         </Pressable>
       </View>
     </View>
