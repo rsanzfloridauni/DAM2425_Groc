@@ -14,6 +14,7 @@ import DrawerButton from '../../components/DrawerButton';
 import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
+import * as FileSystem from 'expo-file-system';
 
 export default function User({ navigation }) {
   const {
@@ -30,16 +31,16 @@ export default function User({ navigation }) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  //User data
   const [linkStreak, setLinkStreak] = useState(null);
   const [provisionalImage, setProvisionalImage] = useState(null);
-  const [provisionalName, setProvisionalName] = useState(name);
-  const [provisionalPwd, setProvisionalPwd] = useState(password);
+  const [provisionalName, setProvisionalName] = useState(null);
+  const [provisionalPwd, setProvisionalPwd] = useState(null);
+  const [base64, setBase64] = useState(null);
+  const [extension, setExtension] = useState(null);
 
   useEffect(() => {
-    setProvisionalName(name);
-    setProvisionalPwd(password);
-    setProvisionalImage(picture);
-
     const loadFonts = async () => {
       await Font.loadAsync({
         'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
@@ -54,23 +55,41 @@ export default function User({ navigation }) {
 
   useEffect(() => {
     getUserInfo(
-      `http://localhost:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+      `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
     );
-  });
+  }, []);
 
   const getUserInfo = async (url) => {
     try {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setName(result.username);
-        setPassword(result.password);
-        setPicture(result.profilePicture);
+        setExtension(result.extension);
+        setProvisionalName(result.username);
+        setProvisionalPwd(result.password);
+        setProvisionalImage(
+          getImageUriFromBase64(result.base64, result.extension)
+        );
         setLinkStreak(result.linkStreak);
       }
     } catch (error) {
-      return console.log(error);
+      console.log(error);
     }
+  };
+
+  const convertImageToBase64 = async (imageUri) => {
+    try {
+      const base64String = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      setBase64(base64String);
+    } catch (error) {
+      console.error('Error convirtiendo imagen a Base64:', error);
+    }
+  };
+
+  const getImageUriFromBase64 = (base64String, extension) => {
+    return `data:image/${extension};base64,${base64String}`;
   };
 
   const getUserStreak = async () => {
@@ -92,7 +111,7 @@ export default function User({ navigation }) {
   const handleSave = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/imgini/update?token=${token}`,
+        `http://44.199.39.144:8080/imgini/update?token=${token}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -100,7 +119,7 @@ export default function User({ navigation }) {
             oldName: name,
             newName: provisionalName,
             password: provisionalPwd,
-            profilePicture: provisionalImage || picture,
+            profilePicture: base64 || null,
           }),
         }
       );
@@ -108,7 +127,9 @@ export default function User({ navigation }) {
       if (!response.ok) {
         Alert.alert('Failed to update user');
       } else {
-        setPicture(provisionalImage);
+        setPicture(getImageUriFromBase64(base64, extension));
+        setName(provisionalName);
+        setPassword(provisionalPwd);
         Alert.alert('DATOS ACTUALIZADOS!');
       }
 
@@ -126,6 +147,7 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
+      convertImageToBase64(result.assets[0].uri);
     }
   };
 
@@ -138,6 +160,7 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
+      convertImageToBase64(result.assets[0].uri);
     }
   };
 
