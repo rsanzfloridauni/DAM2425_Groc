@@ -26,13 +26,20 @@ export default function User({ navigation }) {
     token,
     theme,
   } = useContext(Context);
+
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [provisionalImage, setProvisionalImage] = useState(null);
   const [linkStreak, setLinkStreak] = useState(null);
+  const [provisionalImage, setProvisionalImage] = useState(null);
+  const [provisionalName, setProvisionalName] = useState(name);
+  const [provisionalPwd, setProvisionalPwd] = useState(password);
 
   useEffect(() => {
+    setProvisionalName(name);
+    setProvisionalPwd(password);
+    setProvisionalImage(picture);
+
     const loadFonts = async () => {
       await Font.loadAsync({
         'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
@@ -47,12 +54,28 @@ export default function User({ navigation }) {
 
   useEffect(() => {
     getUserInfo(
-      `http://localhost:8080/imgini/getUserInfo?name=${name}&token=${token}`
+      `http://localhost:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
     );
   });
+
   const getUserInfo = async (url) => {
     try {
       const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        setName(result.username);
+        setPassword(result.password);
+        setPicture(result.profilePicture);
+        setLinkStreak(result.linkStreak);
+      }
+    } catch (error) {
+      return console.log(error);
+    }
+  };
+
+  const getUserStreak = async () => {
+    try {
+      const response = await fetch(linkStreak);
       if (response.ok) {
         const result = await response.json();
         setName(result.username);
@@ -64,24 +87,38 @@ export default function User({ navigation }) {
     } catch (error) {
       return console.log(error);
     }
-  };
+  }
+
   const handleSave = async () => {
+
     try {
-      const response = await fetch('https://api.example.com/user/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, picture, password }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/imgini/update?token=${token}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            oldName: name,
+            newName: provisionalName,
+            password: provisionalPwd,
+            profilePicture: provisionalImage || picture,
+          }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to update user');
+        Alert.alert('Failed to update user');
       } else {
         setPicture(provisionalImage);
+        Alert.alert("DATOS ACTUALIZADOS!")
       }
+
       setEditing(false);
     } catch (error) {
       console.error('Error updating user:', error);
     }
   };
+
   const pickFromCamera = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
@@ -92,6 +129,7 @@ export default function User({ navigation }) {
       setProvisionalImage(result.assets[0].uri);
     }
   };
+
   const pickFromGallery = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -103,6 +141,7 @@ export default function User({ navigation }) {
       setProvisionalImage(result.assets[0].uri);
     }
   };
+
   const pickImage = () => {
     Alert.alert(
       'Choose an option',
@@ -136,8 +175,8 @@ export default function User({ navigation }) {
         </View>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={setName}
+          value={provisionalName}
+          onChangeText={setProvisionalName}
           editable={editing}
           right={
             <TextInput.Icon
@@ -148,8 +187,8 @@ export default function User({ navigation }) {
         />
         <TextInput
           style={styles.input}
-          value={password}
-          onChangeText={setPassword}
+          value={provisionalPwd}
+          onChangeText={setProvisionalPwd}
           secureTextEntry={!showPassword}
           editable={editing}
           right={
