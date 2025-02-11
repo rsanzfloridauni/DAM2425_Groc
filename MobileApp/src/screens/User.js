@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   Image,
   Pressable,
-  ActivityIndicator,
   Alert,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
@@ -14,7 +13,7 @@ import Context from './Context';
 import DrawerButton from '../../components/DrawerButton';
 import Logo from '../../components/Logo';
 import * as Font from 'expo-font';
-import { TextInput, IconButton } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 export default function User({ navigation }) {
   const {
@@ -28,7 +27,6 @@ export default function User({ navigation }) {
     theme,
   } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [provisionalImage, setProvisionalImage] = useState(null);
@@ -68,7 +66,6 @@ export default function User({ navigation }) {
     }
   };
   const handleSave = async () => {
-    setLoading(true);
     try {
       const response = await fetch('https://api.example.com/user/update', {
         method: 'POST',
@@ -83,8 +80,6 @@ export default function User({ navigation }) {
       setEditing(false);
     } catch (error) {
       console.error('Error updating user:', error);
-    } finally {
-      setLoading(false);
     }
   };
   const pickFromCamera = async () => {
@@ -120,12 +115,6 @@ export default function User({ navigation }) {
     );
   };
 
-  if (loading) {
-    return (
-      <ActivityIndicator size="large" color="#a0c4ff" style={{ flex: 1 }} />
-    );
-  }
-
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}>
@@ -150,7 +139,12 @@ export default function User({ navigation }) {
           value={name}
           onChangeText={setName}
           editable={editing}
-          right={<TextInput.Icon icon="account" />}
+          right={
+            <TextInput.Icon
+              icon="account"
+              color={theme.isDark ? '#fff' : '#000'}
+            />
+          }
         />
         <TextInput
           style={styles.input}
