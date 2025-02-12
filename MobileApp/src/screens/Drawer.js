@@ -20,7 +20,7 @@ export default function App() {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
       });
       setFontsLoaded(true);
     };

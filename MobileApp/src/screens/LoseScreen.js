@@ -18,7 +18,7 @@ export default function LoseScreen({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -31,7 +31,7 @@ export default function LoseScreen({ navigation }) {
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
       <Text style={[styles.title, { color: theme.text }]}>You lost :(</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         Too bad, better luck next time!

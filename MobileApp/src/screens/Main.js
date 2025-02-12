@@ -11,7 +11,7 @@ export default function Main({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -57,7 +57,7 @@ export default function Main({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
       <View
         style={[
           styles.cardContainer,

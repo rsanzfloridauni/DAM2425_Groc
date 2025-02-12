@@ -8,9 +8,9 @@ import {
 import { TouchableRipple, Snackbar, TextInput } from 'react-native-paper';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
-import Logo from '../../components/Logo';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
+import Logo from '../components/Logo';
 import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
 
@@ -58,8 +58,8 @@ export default function Daily({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
       onPress();

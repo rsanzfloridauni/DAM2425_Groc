@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
-import Logo from '../../components/Logo';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
+import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 
 export default function TermsScreen({ navigation }) {
@@ -21,8 +21,8 @@ export default function TermsScreen({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
       });
       setFontsLoaded(true);
     };

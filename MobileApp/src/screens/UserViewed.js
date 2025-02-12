@@ -10,9 +10,9 @@ import {
 import { useState, useEffect, useContext } from 'react';
 import { useRoute } from '@react-navigation/native';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
-import Logo from '../../components/Logo';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
+import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 
 export default function User({ navigation }) {
@@ -24,8 +24,8 @@ export default function User({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };

@@ -1,16 +1,16 @@
 import { StyleSheet, Text, Image, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
-import { useAppContext } from '../src/screens/Context';
+import { useAppContext } from '../screens/Context';
 import * as Font from 'expo-font';
 
-const Rank = ({ object, navigation }) => {
+const RankUser = ({ object, navigation }) => {
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -26,12 +26,7 @@ const Rank = ({ object, navigation }) => {
         styles.container,
         { backgroundColor: theme.background, borderColor: theme.text },
       ]}
-      onPress={() =>
-        navigation.navigate('UserViewed', {
-          user: object.name,
-          pic: object.picture,
-        })
-      }>
+      onPress={() => navigation.navigate('User')}>
       <Image source={object.picture} style={styles.image} />
       <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
@@ -45,6 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#2f124a',
     borderRadius: 5,
@@ -65,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Rank;
+export default RankUser;

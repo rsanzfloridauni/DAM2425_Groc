@@ -10,7 +10,7 @@ export default function LoadingScreen({ navigation }) {
   useEffect(() => {
     const loadFontsAndNavigate = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
 
       setFontsLoaded(true);
@@ -27,7 +27,7 @@ export default function LoadingScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
       <ActivityIndicator size="large" color="#a0c4ff" />
       <Text style={[styles.text, { color: theme.text }]}>
         Loading, please wait...

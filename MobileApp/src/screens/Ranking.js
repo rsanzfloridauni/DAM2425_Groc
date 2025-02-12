@@ -1,11 +1,11 @@
 import { Text, View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
-import Logo from '../../components/Logo';
-import Rank from '../../components/Rank';
-import RankUser from '../../components/RankUser';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
+import Logo from '../components/Logo';
+import Rank from '../components/Rank';
+import RankUser from '../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
@@ -15,8 +15,8 @@ export default function Ranking({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -27,11 +27,11 @@ export default function Ranking({ navigation }) {
   }, []);
 
   const data = [
-    { picture: require('../../assets/imgini.png'), name: 'Juan', points: 28 },
-    { picture: require('../../assets/imgini.png'), name: 'María', points: 34 },
-    { picture: require('../../assets/imgini.png'), name: 'Pedro', points: 22 },
-    { picture: require('../../assets/imgini.png'), name: 'Ana', points: 29 },
-    { picture: require('../../assets/imgini.png'), name: 'Juan', points: 28 },
+    { picture: require('../assets/imgini.png'), name: 'Juan', points: 28 },
+    { picture: require('../assets/imgini.png'), name: 'María', points: 34 },
+    { picture: require('../assets/imgini.png'), name: 'Pedro', points: 22 },
+    { picture: require('../assets/imgini.png'), name: 'Ana', points: 29 },
+    { picture: require('../assets/imgini.png'), name: 'Juan', points: 28 },
   ];
 
   return (

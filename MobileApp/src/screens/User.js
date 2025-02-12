@@ -10,8 +10,8 @@ import {
 import { useState, useEffect, useContext } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import Logo from '../../components/Logo';
+import DrawerButton from '../components/DrawerButton';
+import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
@@ -43,8 +43,8 @@ export default function User({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };

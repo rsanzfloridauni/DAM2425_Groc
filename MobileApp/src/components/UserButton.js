@@ -1,7 +1,7 @@
 import { TouchableOpacity, View, Image, Platform } from 'react-native';
 import { useContext } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Context from '../src/screens/Context';
+import Context from '../screens/Context';
 
 const UserButton = ({ navigation }) => {
   const { name, picture, theme } = useContext(Context);

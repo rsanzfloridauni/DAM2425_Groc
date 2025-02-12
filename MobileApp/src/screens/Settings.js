@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
 import * as Font from 'expo-font';
 
 export default function Settings({ navigation }) {
@@ -29,7 +29,7 @@ export default function Settings({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -54,7 +54,7 @@ export default function Settings({ navigation }) {
       <View style={styles.textContainer}>
         <Image
           style={styles.image}
-          source={require('../../assets/imgini.png')}
+          source={require('../assets/imgini.png')}
         />
         <Text style={[styles.text, { color: theme.text }]}>
           {theme.isDark ? 'Dark 🌙' : 'Light ☀️'} Theme

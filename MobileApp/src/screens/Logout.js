@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
 import * as Font from 'expo-font';
 import { getDailyImage } from '../services/services';
 
@@ -22,7 +22,7 @@ export default function Logout({ navigation }) {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -61,7 +61,7 @@ export default function Logout({ navigation }) {
         style={[styles.textContainer, { backgroundColor: theme.background }]}>
         <Image
           style={styles.image}
-          source={require('../../assets/imgini.png')}
+          source={require('../assets/imgini.png')}
         />
         <Text style={[styles.text, { color: theme.text }]}>
           Leaving already?
