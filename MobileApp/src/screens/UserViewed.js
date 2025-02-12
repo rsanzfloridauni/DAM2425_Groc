@@ -19,7 +19,7 @@ export default function User({ navigation }) {
   const { name, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const route = useRoute();
-  const { user, pic } = route.params;
+  const { username, pic } = route.params;
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -46,8 +46,8 @@ export default function User({ navigation }) {
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
         ]}>
-        <Text style={[styles.title, { color: theme.text }]}>{user}</Text>
-        <Image style={styles.image} source={{ pic }} />
+        <Text style={[styles.title, { color: theme.text }]}>{username}</Text>
+        <Image style={styles.image} source={{ uri: pic }} />
         <Pressable
           onPress={() => navigation.navigate('CalendarScreen')}
           style={styles.button}>

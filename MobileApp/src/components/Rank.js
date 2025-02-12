@@ -2,10 +2,15 @@ import { StyleSheet, Text, Image, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../screens/Context';
 import * as Font from 'expo-font';
+import toImage from '../utilities/toImageUri';
 
 const Rank = ({ object, navigation }) => {
+
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [userImage, setUserImage] = useState(
+    toImage(object.profilePicture, object.extension)
+  );
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -28,11 +33,11 @@ const Rank = ({ object, navigation }) => {
       ]}
       onPress={() =>
         navigation.navigate('UserViewed', {
-          user: object.name,
-          pic: object.picture,
+          user: object.username,
+          pic: userImage,
         })
       }>
-      <Image source={object.picture} style={styles.image} />
+      <Image source={{ uri: userImage }} style={styles.image} />
       <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         {object.points} points

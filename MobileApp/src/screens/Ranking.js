@@ -1,4 +1,11 @@
-import { Text, View, StyleSheet, SafeAreaView, FlatList, Alert } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Alert,
+} from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
@@ -30,16 +37,17 @@ export default function Ranking({ navigation }) {
       loadFonts();
     }
 
-    if(points == null){
-      getUserPoints(`http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`);
+    if (points == null) {
+      getUserPoints(
+        `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+      );
     }
   }, []);
 
   useEffect(() => {
     const apiUrl = `http://44.199.39.144:8080/imgini/ranking?token=${token}&page=${pageIndex}&size=5`;
     getInfoRanking(apiUrl);
-  }, [pageIndex]); 
-
+  }, [pageIndex]);
 
   const getUserPoints = async (url) => {
     try {
@@ -58,11 +66,11 @@ export default function Ranking({ navigation }) {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setUsers(result.usersRanking); 
+        setUsers(result.usersRanking);
         setTotalPages(result.totalPages);
         setPreviousPage(result.hasPrevious);
         setNextPage(result.hasNext);
-        Alert.alert("Datos añadidos de la API con éxito!")
+        Alert.alert('Datos añadidos de la API con éxito!');
       } else {
         console.error('Error en la API:', response.status);
       }
@@ -84,7 +92,7 @@ export default function Ranking({ navigation }) {
         ]}>
         <Text style={[styles.title, { color: theme.text }]}>Ranking</Text>
         <FlatList
-          data={users} 
+          data={users}
           renderItem={({ item }) => (
             <Rank object={item} navigation={navigation} />
           )}
@@ -101,7 +109,6 @@ export default function Ranking({ navigation }) {
           <RankUser
             object={{
               picture,
-              //extension,
               name,
               points,
             }}
