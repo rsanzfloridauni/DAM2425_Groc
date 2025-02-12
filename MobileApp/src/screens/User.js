@@ -14,13 +14,13 @@ import DrawerButton from '../components/DrawerButton';
 import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
-import * as FileSystem from 'expo-file-system';
+import toBase64 from '../utilities/toBase64';
+import toImageUri from '../utilities/toImageUri';
 
 export default function User({ navigation }) {
   const {
     name,
     setName,
-    picture,
     setPicture,
     password,
     setPassword,
@@ -68,7 +68,7 @@ export default function User({ navigation }) {
         setProvisionalName(result.username);
         setProvisionalPwd(result.password);
         setProvisionalImage(
-          getImageUriFromBase64(result.base64, result.extension)
+          toImageUri(result.base64, result.extension)
         );
         setLinkStreak(result.linkStreak);
       }
@@ -77,20 +77,6 @@ export default function User({ navigation }) {
     }
   };
 
-  const convertImageToBase64 = async (imageUri) => {
-    try {
-      const base64String = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setBase64(base64String);
-    } catch (error) {
-      console.error('Error convirtiendo imagen a Base64:', error);
-    }
-  };
-
-  const getImageUriFromBase64 = (base64String, extension) => {
-    return `data:image/${extension};base64,${base64String}`;
-  };
 
   const getUserStreak = async () => {
     try {
@@ -147,7 +133,7 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      convertImageToBase64(result.assets[0].uri);
+      toBase64(result.assets[0].uri);
     }
   };
 
@@ -160,7 +146,7 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      convertImageToBase64(result.assets[0].uri);
+      toBase64(result.assets[0].uri);
     }
   };
 
