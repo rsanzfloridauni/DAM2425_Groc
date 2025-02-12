@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Context from '../screens/Context';
 
 const UserButton = ({ navigation }) => {
-  const { name, picture, theme } = useContext(Context);
+  const { picture, theme } = useContext(Context);
 
   const handlePress = () => {
     navigation.navigate('User');

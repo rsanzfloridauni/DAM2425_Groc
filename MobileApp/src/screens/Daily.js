@@ -11,47 +11,37 @@ import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
 import UserButton from '../components/UserButton';
 import Logo from '../components/Logo';
-import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
+import toImageUri from '../utilities/toImageUri';
 
 export default function Daily({ navigation }) {
   const { name, token, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
-  const [topic] = useState('Cat');
+  const [answer, setAnswer] = useState('');
+  const [topic, setTopic] = useState('');
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
   const [tries, setTries] = useState(4);
+  const [isGuessDisabled, setIsGuessDisabled] = useState(false);
 
   const onPress = async () => {
     try {
-      const dailyResponse = await fetch(
-        `https://tu-api.com/imgini/dailyImage?token=${token}`
+      const response = await fetch(
+        `https://44.199.39.144:8080/imgini/dailyImage?token=${token}`
       );
+      const data = await response.json();
 
-      if (!dailyResponse.ok) {
-        throw new Error('Error al obtener la imagen diaria');
+      setAnswer(data.imageName);
+      setTopic(data.theme);
+
+      if (data.image && data.extension) {
+        const imageUri = toImageUri(data.imgBase64, data.extension);
+        setImg(imageUri);
       }
-
-      const dailyData = await dailyResponse.json();
-      const imageName = new URL(dailyData.link).searchParams.get('name');
-
-      if (!imageName) {
-        throw new Error('No se pudo extraer el nombre de la imagen');
-      }
-
-      const imageResponse = await fetch(
-        `https://tu-api.com/imgini/getImage?name=${imageName}&token=${token}`
-      );
-
-      if (!imageResponse.ok) {
-        throw new Error('Error al obtener la imagen');
-      }
-
-      setImg(imageResponse.url);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching image:', error);
     }
   };
 
@@ -77,17 +67,22 @@ export default function Daily({ navigation }) {
     }
   }, [visible]);
 
+  useEffect(() => {
+    if (tries === 0) {
+      navigation.navigate('LoseScreen');
+      setIsGuessDisabled(true);
+    }
+  }, [tries]);
+
   const handleGuess = () => {
-    if (text.trim() !== '' && tries > 0) {
-      if (text === topic) {
+    if (text.trim() !== '') {
+      if (text === answer) {
+        setIsGuessDisabled(true);
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
         setTries(tries - 1);
         revealTile();
         setText('');
-        if (tries <= 1) {
-          navigation.navigate('LoseScreen');
-        }
       }
     } else {
       setVisible(true);
@@ -170,7 +165,11 @@ export default function Daily({ navigation }) {
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
           onPress={handleGuess}
-          style={styles.button}>
+          style={[
+            styles.button,
+            isGuessDisabled && { backgroundColor: 'gray' },
+          ]}
+          disabled={isGuessDisabled}>
           <Text style={[styles.text, { color: theme.text }]}>Guess</Text>
         </TouchableRipple>
         <Snackbar

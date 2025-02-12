@@ -39,11 +39,25 @@ export default function Settings({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const onPress = () => {
-    setName('');
-    setToken('');
-    setPicture(null);
-    navigation.navigate('Main');
+  const onPress = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/delete?name=${name}&password=${password}&token=${token}`,
+        { method: 'DELETE' }
+      );
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar la cuenta');
+      }
+
+      setName('');
+      setToken('');
+      setPassword('');
+      setPicture(null);
+      navigation.navigate('Main');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -52,10 +66,7 @@ export default function Settings({ navigation }) {
       <DrawerButton navigation={navigation} />
       {name !== 'Guest' && <UserButton navigation={navigation} />}
       <View style={styles.textContainer}>
-        <Image
-          style={styles.image}
-          source={require('../assets/imgini.png')}
-        />
+        <Image style={styles.image} source={require('../assets/imgini.png')} />
         <Text style={[styles.text, { color: theme.text }]}>
           {theme.isDark ? 'Dark 🌙' : 'Light ☀️'} Theme
         </Text>

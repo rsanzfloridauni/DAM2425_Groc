@@ -16,21 +16,18 @@ import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
 
 export default function Infinite({ navigation }) {
-  const { name, setName, theme } = useContext(Context);
+  const { name, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
-  const [topic, setTopic] = useState('Cat');
+  const [topic, setTopic] = useState('');
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [tries, setTries] = useState(4);
-  const [items, setItems] = useState([
-    { label: 'Opción 1', value: 'opcion1' },
-    { label: 'Opción 2', value: 'opcion2' },
-    { label: 'Opción 3', value: 'opcion3' },
-  ]);
+  const [isGuessDisabled, setIsGuessDisabled] = useState(false);
+  const [items, setItems] = useState([{ label: 'Cuadros', value: 'cuadros' }]);
 
   const generateImg = async () => {
     const resp = await getDailyImage(
@@ -42,10 +39,11 @@ export default function Infinite({ navigation }) {
   const handleGenerate = () => {
     if (value) {
       setTopic(value);
-      generateImg();
-      revealStart();
       setText('');
       setTries(4);
+      setIsGuessDisabled(false);
+      generateImg();
+      revealStart();
     }
   };
 
@@ -63,17 +61,22 @@ export default function Infinite({ navigation }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (tries === 0) {
+      navigation.navigate('LoseScreen');
+      setIsGuessDisabled(true);
+    }
+  }, [tries]);
+
   const handleGuess = () => {
-    if (text.trim() !== '' && tries > 0) {
+    if (text.trim() !== '') {
       if (text === topic) {
+        setIsGuessDisabled(true);
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
         setTries(tries - 1);
         revealTile();
         setText('');
-        if (tries <= 1) {
-          navigation.navigate('LoseScreen');
-        }
       }
     } else {
       setVisible(true);
@@ -170,11 +173,18 @@ export default function Infinite({ navigation }) {
           placeholderStyle={styles.text}
           value={text}
         />
+        <Text style={[styles.text, { color: theme.text }]}>
+          Tries left: {tries}
+        </Text>
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"
           onPress={handleGuess}
-          style={styles.button}>
+          style={[
+            styles.button,
+            isGuessDisabled && { backgroundColor: 'gray' },
+          ]}
+          disabled={isGuessDisabled}>
           <Text style={[styles.text, { color: theme.text }]}>Guess</Text>
         </TouchableRipple>
         <Snackbar

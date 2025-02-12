@@ -11,7 +11,6 @@ import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
 import UserButton from '../components/UserButton';
 import * as Font from 'expo-font';
-import { getDailyImage } from '../services/services';
 
 export default function Logout({ navigation }) {
   const { name, setName, setPicture, token, setToken, theme } =
@@ -34,18 +33,22 @@ export default function Logout({ navigation }) {
 
   const onPress = async () => {
     try {
-      const response = await getDailyImage(
-        `http://localhost:8080/imgini/logout?token=${token}`
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/logout?token=${token}`,
+        { method: 'GET' }
       );
 
-      if (response) {
-        console.log('Respuesta recibida:', response);
+      if (response.ok) {
+        console.log('Logout exitoso.');
         setName('');
         setToken('');
         setPicture(null);
         navigation.navigate('Main');
       } else {
-        console.log('No se recibió respuesta válida del servidor.');
+        console.log(
+          'Error al cerrar sesión. Código de estado:',
+          response.status
+        );
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -59,10 +62,7 @@ export default function Logout({ navigation }) {
       {name !== 'Guest' && <UserButton navigation={navigation} />}
       <View
         style={[styles.textContainer, { backgroundColor: theme.background }]}>
-        <Image
-          style={styles.image}
-          source={require('../assets/imgini.png')}
-        />
+        <Image style={styles.image} source={require('../assets/imgini.png')} />
         <Text style={[styles.text, { color: theme.text }]}>
           Leaving already?
         </Text>

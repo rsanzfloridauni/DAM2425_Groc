@@ -3,9 +3,10 @@ import { useContext, useState, useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
 import Context from './Context';
 import * as Font from 'expo-font';
+import toImageUri from '../utilities/toImageUri';
 
 export default function Login({ navigation }) {
-  const { name, setName, password, setPassword, theme, setToken } =
+  const { name, setName, password, setPassword, setPicture, theme, setToken } =
     useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -31,6 +32,18 @@ export default function Login({ navigation }) {
 
       const token = await response.text();
       setToken(token);
+
+      try {
+        const response2 = await fetch(
+          `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+        );
+        if (response2.ok) {
+          const result = await response2.json();
+          setPicture(toImageUri(result.base64, result.extension));
+        }
+      } catch (error) {
+        console.log(error);
+      }
 
       navigation.navigate('LoadingScreen');
     } catch (error) {

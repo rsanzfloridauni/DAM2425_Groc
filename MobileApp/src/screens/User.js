@@ -18,21 +18,13 @@ import toBase64 from '../utilities/toBase64';
 import toImageUri from '../utilities/toImageUri';
 
 export default function User({ navigation }) {
-  const {
-    name,
-    setName,
-    setPicture,
-    password,
-    setPassword,
-    token,
-    theme,
-  } = useContext(Context);
+  const { name, setName, setPicture, password, setPassword, token, theme } =
+    useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  //User data
   const [linkStreak, setLinkStreak] = useState(null);
   const [provisionalImage, setProvisionalImage] = useState(null);
   const [provisionalName, setProvisionalName] = useState(null);
@@ -67,9 +59,7 @@ export default function User({ navigation }) {
         setExtension(result.extension);
         setProvisionalName(result.username);
         setProvisionalPwd(result.password);
-        setProvisionalImage(
-          toImageUri(result.base64, result.extension)
-        );
+        setProvisionalImage(toImageUri(result.base64, result.extension));
         setLinkStreak(result.linkStreak);
       }
     } catch (error) {
@@ -77,6 +67,9 @@ export default function User({ navigation }) {
     }
   };
 
+  const getImageUriFromBase64 = (base64String, extension) => {
+    return `data:image/${extension};base64,${base64String}`;
+  };
 
   const getUserStreak = async () => {
     try {
@@ -116,7 +109,7 @@ export default function User({ navigation }) {
         setPicture(getImageUriFromBase64(base64, extension));
         setName(provisionalName);
         setPassword(provisionalPwd);
-        Alert.alert('DATOS ACTUALIZADOS!');
+        Alert.alert('DATA UPDATED!');
       }
 
       setEditing(false);
@@ -133,7 +126,8 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      toBase64(result.assets[0].uri);
+      const base64String = await toBase64(result.assets[0].uri);
+      setBase64(base64String);
     }
   };
 
@@ -146,7 +140,8 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      toBase64(result.assets[0].uri);
+      const base64String = await toBase64(result.assets[0].uri);
+      setBase64(base64String);
     }
   };
 
