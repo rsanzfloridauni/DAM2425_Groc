@@ -8,7 +8,9 @@ export const Provider = ({ children }) => {
   const [token, setToken] = useState('');
   const [isDark, setIsDark] = useState(false);
   const [password, setPassword] = useState('');
+  const [points, setPoints] = useState(null);
 
+  
   const theme = {
     isDark,
     background: isDark ? '#222' : '#fff',
@@ -30,6 +32,8 @@ export const Provider = ({ children }) => {
         password,
         setPassword,
         theme,
+        points, 
+        setPoints,
       }}>
       {children}
     </Context.Provider>

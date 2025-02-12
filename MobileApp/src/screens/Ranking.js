@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, FlatList, Alert } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
@@ -9,8 +9,13 @@ import RankUser from '../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
-  const { name, picture, theme } = useContext(Context);
+  const { name, picture, theme, token, points } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
+  const [previousPage, setPreviousPage] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -24,15 +29,47 @@ export default function Ranking({ navigation }) {
     if (!fontsLoaded) {
       loadFonts();
     }
+
+    if(points == null){
+      getUserPoints(`http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`);
+    }
   }, []);
 
-  const data = [
-    { picture: require('../assets/imgini.png'), name: 'Juan', points: 28 },
-    { picture: require('../assets/imgini.png'), name: 'María', points: 34 },
-    { picture: require('../assets/imgini.png'), name: 'Pedro', points: 22 },
-    { picture: require('../assets/imgini.png'), name: 'Ana', points: 29 },
-    { picture: require('../assets/imgini.png'), name: 'Juan', points: 28 },
-  ];
+  useEffect(() => {
+    const apiUrl = `http://44.199.39.144:8080/imgini/ranking?token=${token}&page=${pageIndex}&size=5`;
+    getInfoRanking(apiUrl);
+  }, [pageIndex]); 
+
+
+  const getUserPoints = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        setPoints(result.points);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getInfoRanking = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        setUsers(result.usersRanking); 
+        setTotalPages(result.totalPages);
+        setPreviousPage(result.hasPrevious);
+        setNextPage(result.hasNext);
+        Alert.alert("Datos añadidos de la API con éxito!")
+      } else {
+        console.error('Error en la API:', response.status);
+      }
+    } catch (error) {
+      console.log('Error obteniendo datos:', error);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -47,7 +84,7 @@ export default function Ranking({ navigation }) {
         ]}>
         <Text style={[styles.title, { color: theme.text }]}>Ranking</Text>
         <FlatList
-          data={data}
+          data={users} 
           renderItem={({ item }) => (
             <Rank object={item} navigation={navigation} />
           )}
@@ -64,8 +101,9 @@ export default function Ranking({ navigation }) {
           <RankUser
             object={{
               picture,
+              //extension,
               name,
-              points: 28,
+              points,
             }}
             navigation={navigation}
           />

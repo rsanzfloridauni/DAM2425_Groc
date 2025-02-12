@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
 export default function CalendarScreen({ navigation, route }) {
-  const { startDate, finishDate } = route.params;
+  const { highlightedDates = [] } = route.params; 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const { theme } = useAppContext();
 
@@ -23,54 +23,51 @@ export default function CalendarScreen({ navigation, route }) {
     }
   }, [fontsLoaded]);
 
-  const getDateRange = (start, end) => {
-    let dates = {};
-    let currentDate = new Date(start);
-    let lastDate = new Date(end);
+  const markDates = (datesArray) => {
+    if (!datesArray || datesArray.length === 0) return {}; 
 
-    currentDate.setUTCHours(0, 0, 0, 0);
-    lastDate.setUTCHours(0, 0, 0, 0);
-
-    while (currentDate.getTime() <= lastDate.getTime()) {
-      const formattedDate = currentDate.toISOString().split('T')[0];
-      dates[formattedDate] = {
-        color: '#d3a3ff',
-        textColor: theme.text,
-        startingDay: formattedDate === start,
-        endingDay: formattedDate === end,
+    let marked = {};
+    datesArray.forEach((date) => {
+      marked[date] = {
+        customStyles: {
+          container: {
+            backgroundColor: '#d3a3ff', 
+            borderRadius: 8,
+          },
+          text: {
+            color: theme.text, 
+            fontWeight: 'bold',
+          },
+        },
       };
-      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
-    }
-
-    return dates;
+    });
+    return marked;
   };
 
-  const [markedDates, setMarkedDates] = useState(
-    getDateRange(startDate, finishDate)
-  );
+  const [markedDates, setMarkedDates] = useState(() => markDates(highlightedDates));
+
+  useEffect(() => {
+    setMarkedDates(markDates(highlightedDates));
+  }, [highlightedDates]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.title, { color: theme.text }]}>Current Streak</Text>
+      <Text style={[styles.title, { color: theme.text }]}>Hit History</Text>
       <View
         style={[
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
-        ]}>
+        ]}
+      >
         <Calendar
           markedDates={markedDates}
-          markingType={'period'}
+          markingType={'custom'}
           theme={{
             backgroundColor: theme.background,
             calendarBackground: theme.background,
             textSectionTitleColor: theme.text,
-            selectedDayBackgroundColor: '#ff6347',
-            selectedDayTextColor: theme.text,
             todayTextColor: '#ff4500',
             dayTextColor: theme.text,
-            dotColor: '#00adf5',
-            selectedDotColor: '#ffffff',
-            arrowColor: '#ff4500',
             monthTextColor: theme.text,
             indicatorColor: 'blue',
             textDayFontFamily: 'alegraya-sans',
@@ -88,6 +85,7 @@ export default function CalendarScreen({ navigation, route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

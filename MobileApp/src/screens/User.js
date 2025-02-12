@@ -16,21 +16,26 @@ import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
 import toBase64 from '../utilities/toBase64';
 import toImageUri from '../utilities/toImageUri';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function User({ navigation }) {
-  const { name, setName, setPicture, password, setPassword, token, theme } =
+  const { name, setName, setPicture, password, setPassword, token, theme, setPoints } =
     useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  //User data
   const [linkStreak, setLinkStreak] = useState(null);
   const [provisionalImage, setProvisionalImage] = useState(null);
   const [provisionalName, setProvisionalName] = useState(null);
   const [provisionalPwd, setProvisionalPwd] = useState(null);
   const [base64, setBase64] = useState(null);
   const [extension, setExtension] = useState(null);
+  const isFocused = useIsFocused();
+  const [attemptDays, setAttemptDays] = useState([]);
+
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -40,16 +45,20 @@ export default function User({ navigation }) {
       });
       setFontsLoaded(true);
     };
+
     if (!fontsLoaded) {
       loadFonts();
     }
   }, [fontsLoaded]);
 
   useEffect(() => {
+  if (isFocused) {
     getUserInfo(
       `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
     );
-  }, []);
+    getUserStreak();
+  }
+}, [isFocused]);
 
   const getUserInfo = async (url) => {
     try {
@@ -61,31 +70,29 @@ export default function User({ navigation }) {
         setProvisionalPwd(result.password);
         setProvisionalImage(toImageUri(result.base64, result.extension));
         setLinkStreak(result.linkStreak);
+        setPoints(result.points);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getImageUriFromBase64 = (base64String, extension) => {
-    return `data:image/${extension};base64,${base64String}`;
-  };
-
   const getUserStreak = async () => {
-    try {
-      const response = await fetch(linkStreak);
-      if (response.ok) {
-        const result = await response.json();
-        setName(result.username);
-        setPassword(result.password);
-        setProvisionalImage(profilePicture);
-        setPicture(profilePicture);
-        setLinkStreak(streakLink);
-      }
-    } catch (error) {
-      return console.log(error);
+  try {
+    const response = await fetch(linkStreak);
+    if (response.ok) {
+      const result = await response.json();
+
+      const dates = result.attempts.map((attempt) => attempt.attemptDate);
+      
+      setAttemptDays(dates);
+    } else {
+      console.error("Error en la respuesta de la API");
     }
-  };
+  } catch (error) {
+    console.error("Error obteniendo el streak del usuario:", error);
+  }
+};
 
   const handleSave = async () => {
     try {
@@ -99,6 +106,7 @@ export default function User({ navigation }) {
             newName: provisionalName,
             password: provisionalPwd,
             profilePicture: base64 || null,
+            extension: "jpg",
           }),
         }
       );
@@ -106,10 +114,10 @@ export default function User({ navigation }) {
       if (!response.ok) {
         Alert.alert('Failed to update user');
       } else {
-        setPicture(getImageUriFromBase64(base64, extension));
+        setPicture(toImageUri(base64, extension));
         setName(provisionalName);
         setPassword(provisionalPwd);
-        Alert.alert('DATA UPDATED!');
+        Alert.alert('DATOS ACTUALIZADOS!'); 
       }
 
       setEditing(false);
@@ -126,8 +134,8 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      const base64String = await toBase64(result.assets[0].uri);
-      setBase64(base64String);
+      const base64Image = await toBase64(result.assets[0].uri);
+      setBase64(base64Image);
     }
   };
 
@@ -140,8 +148,8 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
-      const base64String = await toBase64(result.assets[0].uri);
-      setBase64(base64String);
+      const base64Image = await toBase64(result.assets[0].uri);
+      setBase64(base64Image);
     }
   };
 
@@ -205,8 +213,7 @@ export default function User({ navigation }) {
         <Pressable
           onPress={() =>
             navigation.navigate('CalendarScreen', {
-              startDate: '2025-02-08',
-              finishDate: '2025-02-10',
+              highlightedDates: attemptDays,
             })
           }
           style={styles.button}>
