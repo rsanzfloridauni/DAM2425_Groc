@@ -73,25 +73,6 @@ public class Controller {
 		}
 	}
 
-	@GetMapping("imgini/getImage")
-	public ResponseEntity<Resource> getImage(@RequestParam(value = "name") String imgName,
-			@RequestParam(value = "token") String userToken) {
-		if (!Utilities.checkUser(tokens, userToken)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-
-		Resource resource = new ClassPathResource("static/imgs/" + imgName);
-		if (resource.isFile()) {
-			if (resource.getFilename().contains("png")) {
-				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_PNG).body(resource);
-			} else {
-				return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.IMAGE_JPEG).body(resource);
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-	}
-
 	@GetMapping("imgini/logout")
 	ResponseEntity<Object> logout(@RequestParam(value = "token") String userToken) {
 		try {
