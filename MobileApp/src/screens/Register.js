@@ -5,7 +5,7 @@ import * as Font from 'expo-font';
 import { TextInput } from 'react-native-paper';
 
 export default function Register({ navigation }) {
-  const { name, setName, password, setPassword, setToken, theme } =
+  const { name, setName, password, setPassword, setToken, setUserId, theme } =
     useContext(Context);
   const [textName, setTextName] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -56,6 +56,18 @@ export default function Register({ navigation }) {
         }
 
         setToken(responseText);
+        try {
+          const response2 = await fetch(
+            `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+          );
+          if (response2.ok) {
+            const result = await response2.json();
+            setUserId(result.id);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
         navigation.navigate('LoadingScreen');
       } catch (error) {
         console.error(error);
@@ -123,9 +135,8 @@ export default function Register({ navigation }) {
             <Text
               style={styles.textLink}
               onPress={() => {
-                navigation.navigate('Drawer', {
-                  screen: 'Terms & Conditions',
-                });
+                setName('');
+                navigation.navigate('Terms');
               }}>
               Terms and Conditions
             </Text>

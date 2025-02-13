@@ -14,7 +14,7 @@ import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 
 export default function TermsScreen({ navigation }) {
-  const { name, setName, theme } = useContext(Context);
+  const { name, theme } = useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 

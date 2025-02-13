@@ -6,8 +6,16 @@ import * as Font from 'expo-font';
 import toImageUri from '../utilities/toImageUri';
 
 export default function Login({ navigation }) {
-  const { name, setName, password, setPassword, setPicture, theme, setToken } =
-    useContext(Context);
+  const {
+    name,
+    setName,
+    password,
+    setPassword,
+    setPicture,
+    theme,
+    setToken,
+    setUserId,
+  } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -40,6 +48,7 @@ export default function Login({ navigation }) {
         );
         if (response2.ok) {
           const result = await response2.json();
+          setUserId(result.id);
           if (result.profilePicture === '' || result.profilePicture === null) {
             setPicture(null);
           } else {
@@ -57,6 +66,7 @@ export default function Login({ navigation }) {
   };
 
   const toMain = () => {
+    setName('');
     navigation.navigate('Main');
   };
 
