@@ -95,9 +95,9 @@ export default function Ranking({ navigation }) {
         <FlatList
           data={users}
           renderItem={({ item }) => (
-            <Rank object={item} navigation={navigation} />
+            <Rank object={item} navigation={navigation} key={item.username} />
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.username.toString()}
         />
       </View>
       <View style={styles.buttonContainer}>

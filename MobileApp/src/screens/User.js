@@ -19,7 +19,7 @@ import toImageUri from '../utilities/toImageUri';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function User({ navigation }) {
-  const { name, setName, setPicture, password, setPassword, token, theme, setPoints } =
+  const { name, setName, setPicture, password, setPassword, token, theme, setPoints, picture } =
     useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -68,7 +68,9 @@ export default function User({ navigation }) {
         setExtension(result.extension);
         setProvisionalName(result.username);
         setProvisionalPwd(result.password);
-        setProvisionalImage(toImageUri(result.base64, result.extension));
+        // if(picture == null){
+        //   setProvisionalImage(toImageUri(result.base64, result.extension));
+        // }
         setLinkStreak(result.linkStreak);
         setPoints(result.points);
       }
@@ -178,7 +180,7 @@ export default function User({ navigation }) {
         ]}>
         <Text style={[styles.title, { color: theme.text }]}>User</Text>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: provisionalImage }} />
+          <Image style={styles.image} source={{ uri: picture ? picture : provisionalImage }} />
           {editing && (
             <Pressable onPress={pickImage} style={styles.imageButton}>
               <Text style={styles.text}>Change</Text>

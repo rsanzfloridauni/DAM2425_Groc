@@ -8,9 +8,7 @@ const Rank = ({ object, navigation }) => {
 
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [userImage, setUserImage] = useState(
-    toImage(object.profilePicture, object.extension)
-  );
+  const [userImage, setUserImage] = useState('');
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -24,6 +22,10 @@ const Rank = ({ object, navigation }) => {
       loadFonts();
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    setUserImage(toImage(object.profilePicture, object.extension));
+  }, [object]);  
 
   return (
     <Pressable

@@ -1,4 +1,4 @@
-import {
+ import {
   Text,
   View,
   SafeAreaView,

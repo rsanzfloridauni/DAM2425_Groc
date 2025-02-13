@@ -23,7 +23,7 @@ export default function Daily({ navigation }) {
   const [topic, setTopic] = useState('');
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
-  const [tries, setTries] = useState(4);
+  const [tries, setTries] = useState(1);
   const [isGuessDisabled, setIsGuessDisabled] = useState(false);
 
   const onPress = async () => {
@@ -68,7 +68,7 @@ export default function Daily({ navigation }) {
   }, [visible]);
 
   useEffect(() => {
-    if (tries === 0) {
+    if (tries === 5) {
       navigation.navigate('LoseScreen');
       setIsGuessDisabled(true);
     }
@@ -76,11 +76,12 @@ export default function Daily({ navigation }) {
 
   const handleGuess = () => {
     if (text.trim() !== '') {
-      if (text === answer) {
+      if (text.toLowerCase().includes(answer.toLowerCase())) {
         setIsGuessDisabled(true);
+        setHiddenTiles(Array(9).fill(false)); // Revelar toda la imagen
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
-        setTries(tries - 1);
+        setTries(tries + 1);
         revealTile();
         setText('');
       }
