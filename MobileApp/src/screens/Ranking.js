@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   FlatList,
   Alert,
+  Pressable,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
@@ -16,7 +17,7 @@ import RankUser from '../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
-  const { name, password, picture, theme, token, points } = useContext(Context);
+  const { name, picture, theme, token, points, password } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
@@ -66,10 +67,10 @@ export default function Ranking({ navigation }) {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setUsers(result.usersRanking);
-        setTotalPages(result.totalPages);
-        setPreviousPage(result.hasPrevious);
-        setNextPage(result.hasNext);
+        setUsers(result.users);
+        setTotalPages(result.numPages);
+        setPreviousPage(result.previousPage);
+        setNextPage(result.nextPage);
         Alert.alert('Datos añadidos de la API con éxito!');
       } else {
         console.error('Error en la API:', response.status);
@@ -98,6 +99,22 @@ export default function Ranking({ navigation }) {
           )}
           keyExtractor={(item, index) => index.toString()}
         />
+      </View>
+      <View style={styles.buttonContainer}>
+        {previousPage && (
+          <Pressable
+            style={styles.button}
+            onPress={() => setPageIndex(pageIndex - 1)}>
+            <Text style={styles.buttonText}>Anterior</Text>
+          </Pressable>
+        )}
+        {nextPage && (
+          <Pressable
+            style={styles.button}
+            onPress={() => setPageIndex(pageIndex + 1)}>
+            <Text style={styles.buttonText}>Siguiente</Text>
+          </Pressable>
+        )}
       </View>
       {name !== 'Guest' && (
         <View
@@ -146,5 +163,29 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 30,
     alignSelf: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+    alignContent: 'center',
+  },
+  button: {
+    backgroundColor: '#a0c4ff',
+    width: '40%',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
+  buttonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

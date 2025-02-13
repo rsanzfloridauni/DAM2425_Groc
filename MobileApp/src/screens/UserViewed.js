@@ -4,6 +4,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  TextInput,
   Pressable,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
@@ -14,7 +15,7 @@ import UserButton from '../components/UserButton';
 import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 
-export default function UserViewed({ navigation }) {
+export default function User({ navigation }) {
   const { name, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const route = useRoute();

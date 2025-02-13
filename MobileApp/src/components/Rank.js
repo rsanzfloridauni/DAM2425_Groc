@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import toImage from '../utilities/toImageUri';
 
 const Rank = ({ object, navigation }) => {
+
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [userImage, setUserImage] = useState(
@@ -37,7 +38,7 @@ const Rank = ({ object, navigation }) => {
         })
       }>
       <Image source={{ uri: userImage }} style={styles.image} />
-      <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
+      <Text style={[styles.text, { color: theme.text }]}>{object.username}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         {object.points} points
       </Text>

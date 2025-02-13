@@ -19,16 +19,8 @@ import toImageUri from '../utilities/toImageUri';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function User({ navigation }) {
-  const {
-    name,
-    setName,
-    setPicture,
-    password,
-    setPassword,
-    token,
-    theme,
-    setPoints,
-  } = useContext(Context);
+  const { name, setName, setPicture, password, setPassword, token, theme, setPoints } =
+    useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -43,6 +35,7 @@ export default function User({ navigation }) {
   const [extension, setExtension] = useState(null);
   const isFocused = useIsFocused();
   const [attemptDays, setAttemptDays] = useState([]);
+
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -59,13 +52,13 @@ export default function User({ navigation }) {
   }, [fontsLoaded]);
 
   useEffect(() => {
-    if (isFocused) {
-      getUserInfo(
-        `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
-      );
-      getUserStreak();
-    }
-  }, [isFocused]);
+  if (isFocused) {
+    getUserInfo(
+      `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+    );
+    getUserStreak();
+  }
+}, [isFocused]);
 
   const getUserInfo = async (url) => {
     try {
@@ -85,21 +78,21 @@ export default function User({ navigation }) {
   };
 
   const getUserStreak = async () => {
-    try {
-      const response = await fetch(linkStreak);
-      if (response.ok) {
-        const result = await response.json();
+  try {
+    const response = await fetch(linkStreak);
+    if (response.ok) {
+      const result = await response.json();
 
-        const dates = result.attempts.map((attempt) => attempt.attemptDate);
-
-        setAttemptDays(dates);
-      } else {
-        console.error('Error en la respuesta de la API');
-      }
-    } catch (error) {
-      console.error('Error obteniendo el streak del usuario:', error);
+      const dates = result.attempts.map((attempt) => attempt.attemptDate);
+      
+      setAttemptDays(dates);
+    } else {
+      console.error("Error en la respuesta de la API");
     }
-  };
+  } catch (error) {
+    console.error("Error obteniendo el streak del usuario:", error);
+  }
+};
 
   const handleSave = async () => {
     try {
@@ -113,7 +106,7 @@ export default function User({ navigation }) {
             newName: provisionalName,
             password: provisionalPwd,
             profilePicture: base64 || null,
-            extension: 'jpg',
+            extension: "jpg",
           }),
         }
       );
@@ -124,7 +117,7 @@ export default function User({ navigation }) {
         setPicture(toImageUri(base64, extension));
         setName(provisionalName);
         setPassword(provisionalPwd);
-        Alert.alert('DATOS ACTUALIZADOS!');
+        Alert.alert('DATOS ACTUALIZADOS!'); 
       }
 
       setEditing(false);
@@ -155,6 +148,7 @@ export default function User({ navigation }) {
     });
     if (!result.canceled) {
       setProvisionalImage(result.assets[0].uri);
+      
       const base64Image = await toBase64(result.assets[0].uri);
       setBase64(base64Image);
     }
