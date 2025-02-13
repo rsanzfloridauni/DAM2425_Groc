@@ -16,7 +16,7 @@ import RankUser from '../components/RankUser';
 import * as Font from 'expo-font';
 
 export default function Ranking({ navigation }) {
-  const { name, picture, theme, token, points } = useContext(Context);
+  const { name, password, picture, theme, token, points } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalPages, setTotalPages] = useState(null);

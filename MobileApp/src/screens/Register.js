@@ -51,9 +51,8 @@ export default function Register({ navigation }) {
         console.log('Server response:', response.status, responseText);
 
         if (!response.ok) {
-          throw new Error(
-            `Error en la autenticación: ${response.status} - ${responseText}`
-          );
+          Alert.alert('Authentication error.');
+          return;
         }
 
         setToken(responseText);

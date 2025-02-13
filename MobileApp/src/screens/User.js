@@ -19,8 +19,16 @@ import toImageUri from '../utilities/toImageUri';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function User({ navigation }) {
-  const { name, setName, setPicture, password, setPassword, token, theme, setPoints } =
-    useContext(Context);
+  const {
+    name,
+    setName,
+    setPicture,
+    password,
+    setPassword,
+    token,
+    theme,
+    setPoints,
+  } = useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -35,7 +43,6 @@ export default function User({ navigation }) {
   const [extension, setExtension] = useState(null);
   const isFocused = useIsFocused();
   const [attemptDays, setAttemptDays] = useState([]);
-
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -87,10 +94,10 @@ export default function User({ navigation }) {
 
         setAttemptDays(dates);
       } else {
-        console.error("Error en la respuesta de la API");
+        console.error('Error en la respuesta de la API');
       }
     } catch (error) {
-      console.error("Error obteniendo el streak del usuario:", error);
+      console.error('Error obteniendo el streak del usuario:', error);
     }
   };
 
@@ -106,7 +113,7 @@ export default function User({ navigation }) {
             newName: provisionalName,
             password: provisionalPwd,
             profilePicture: base64 || null,
-            extension: "jpg",
+            extension: 'jpg',
           }),
         }
       );

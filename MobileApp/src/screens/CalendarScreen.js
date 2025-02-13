@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
 export default function CalendarScreen({ navigation, route }) {
-  const { highlightedDates = [] } = route.params; 
+  const { highlightedDates = [] } = route.params;
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const { theme } = useAppContext();
 
@@ -24,18 +24,18 @@ export default function CalendarScreen({ navigation, route }) {
   }, [fontsLoaded]);
 
   const markDates = (datesArray) => {
-    if (!datesArray || datesArray.length === 0) return {}; 
+    if (!datesArray || datesArray.length === 0) return {};
 
     let marked = {};
     datesArray.forEach((date) => {
       marked[date] = {
         customStyles: {
           container: {
-            backgroundColor: '#d3a3ff', 
+            backgroundColor: '#d3a3ff',
             borderRadius: 8,
           },
           text: {
-            color: theme.text, 
+            color: theme.text,
             fontWeight: 'bold',
           },
         },
@@ -44,7 +44,9 @@ export default function CalendarScreen({ navigation, route }) {
     return marked;
   };
 
-  const [markedDates, setMarkedDates] = useState(() => markDates(highlightedDates));
+  const [markedDates, setMarkedDates] = useState(() =>
+    markDates(highlightedDates)
+  );
 
   useEffect(() => {
     setMarkedDates(markDates(highlightedDates));
@@ -57,8 +59,7 @@ export default function CalendarScreen({ navigation, route }) {
         style={[
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
-        ]}
-      >
+        ]}>
         <Calendar
           markedDates={markedDates}
           markingType={'custom'}

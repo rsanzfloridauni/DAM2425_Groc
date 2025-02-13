@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     maxWidth: '85%',
     width: '85%',
-    padding: 20,
+    padding: 10,
     paddingBottom: 30,
     borderRadius: 15,
     shadowColor: '#000',
@@ -244,8 +244,6 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     margin: 10,
-    marginBottom: 20,
-    marginTop: 20,
     position: 'relative',
   },
   button: {

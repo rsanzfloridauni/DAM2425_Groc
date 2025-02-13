@@ -5,7 +5,6 @@ import * as Font from 'expo-font';
 import toImage from '../utilities/toImageUri';
 
 const Rank = ({ object, navigation }) => {
-
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [userImage, setUserImage] = useState(

@@ -27,7 +27,8 @@ export default function Login({ navigation }) {
       });
 
       if (!response.ok) {
-        throw new Error('Error en la autenticación');
+        Alert.alert('Authentication error.');
+        return;
       }
 
       const token = await response.text();
@@ -39,7 +40,11 @@ export default function Login({ navigation }) {
         );
         if (response2.ok) {
           const result = await response2.json();
-          setPicture(toImageUri(result.base64, result.extension));
+          if (result.profilePicture === '' || result.profilePicture === null) {
+            setPicture(null);
+          } else {
+            setPicture(toImageUri(result.profilePicture, result.extension));
+          }
         }
       } catch (error) {
         console.log(error);

@@ -1,5 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useState, useEffect } from 'react';
+import { View } from 'react-native';
 import Daily from './Daily';
 import Infinite from './Infinite';
 import Logout from './Logout';
@@ -10,11 +11,12 @@ import TermsScreen from './TermsScreen';
 import Settings from './Settings';
 import * as Font from 'expo-font';
 import { useAppContext } from './Context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
-  const { theme } = useAppContext(); 
+  const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,7 +34,6 @@ export default function App() {
 
   return (
     <Drawer.Navigator
-      useLegacyImplementation={false}
       initialRouteName="Daily"
       screenOptions={{
         headerShown: false,
@@ -45,12 +46,61 @@ export default function App() {
           color: theme.isDark ? '#fff' : '#000',
         },
       }}>
-      <Drawer.Screen name="Daily" component={Daily} />
-      <Drawer.Screen name="Infinite" component={Infinite} />
-      <Drawer.Screen name="Ranking" component={Ranking} />
-      <Drawer.Screen name="Terms & Conditions" component={TermsScreen} />
-      <Drawer.Screen name="Settings" component={Settings} />
-      <Drawer.Screen name="Logout" component={Logout} />
+      <Drawer.Screen
+        name="Daily"
+        component={Daily}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Infinite"
+        component={Infinite}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="infinite" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Ranking"
+        component={Ranking}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="trophy" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Terms & Conditions"
+        component={TermsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="document-text" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="settings" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Logout"
+        component={Logout}
+        options={{
+          drawerItemStyle: { marginTop: 370 },
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="log-out" size={size} color={color} />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="User"
         component={User}
