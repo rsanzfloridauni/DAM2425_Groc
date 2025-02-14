@@ -1,4 +1,4 @@
- import {
+import {
   Text,
   View,
   SafeAreaView,
@@ -12,35 +12,49 @@ import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
 import UserButton from '../components/UserButton';
 import Logo from '../components/Logo';
-import { getDailyImage } from '../services/services';
 import * as Font from 'expo-font';
+import toImageUri from '../utilities/toImageUri';
 
 export default function Infinite({ navigation }) {
-  const { name, theme } = useContext(Context);
+  const { name, theme, token } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
+  const [answer, setAnswer] = useState('');
   const [topic, setTopic] = useState('');
   const [hiddenTiles, setHiddenTiles] = useState(Array(9).fill(true));
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [tries, setTries] = useState(4);
+  const [tries, setTries] = useState(1);
   const [isGuessDisabled, setIsGuessDisabled] = useState(false);
-  const [items, setItems] = useState([{ label: 'Cuadros', value: 'cuadros' }]);
+  const [imgId, setImgId] = useState('');
+  const [items, setItems] = useState([]);
 
   const generateImg = async () => {
-    const resp = await getDailyImage(
-      'https://api.thecatapi.com/v1/images/search?size=full'
-    );
-    setImg(resp[0].url);
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/infiniteImage?token=${token}&theme=${topic}`
+      );
+      const data = await response.json();
+
+      setAnswer(data.imageName);
+
+      if (data.imgBase64 && data.extension) {
+        const imageUri = toImageUri(data.imgBase64, data.extension);
+        setImg(imageUri);
+        setImgId(data.id);
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
   };
 
   const handleGenerate = () => {
     if (value) {
       setTopic(value);
       setText('');
-      setTries(4);
+      setTries(1);
       setIsGuessDisabled(false);
       generateImg();
       revealStart();
@@ -62,19 +76,49 @@ export default function Infinite({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if (tries === 0) {
-      navigation.navigate('LoseScreen');
+    if (topic) {
+      generateImg();
+    }
+  }, [topic]);
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await fetch(
+          `http://44.199.39.144:8080/imgini/imgsThemes?token=${token}`
+        );
+        const data = await response.json();
+        const formattedItems = data.map((item) => ({
+          label: item.charAt(0).toUpperCase() + item.slice(1),
+          value: item,
+        }));
+        setItems(formattedItems);
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+      }
+    };
+
+    fetchThemes();
+  }, []);
+
+  useEffect(() => {
+    if (tries === 5) {
+      navigation.navigate('LoseScreen', { answer: answer });
       setIsGuessDisabled(true);
     }
   }, [tries]);
 
   const handleGuess = () => {
     if (text.trim() !== '') {
-      if (text === topic) {
+      if (
+        text.length >= 5 &&
+        answer.toLowerCase().includes(text.toLowerCase())
+      ) {
         setIsGuessDisabled(true);
+        setHiddenTiles(Array(9).fill(false));
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
-        setTries(tries - 1);
+        setTries(tries + 1);
         revealTile();
         setText('');
       }
@@ -173,9 +217,6 @@ export default function Infinite({ navigation }) {
           placeholderStyle={styles.text}
           value={text}
         />
-        <Text style={[styles.text, { color: theme.text }]}>
-          Tries left: {tries}
-        </Text>
         <TouchableRipple
           borderless={false}
           rippleColor="rgba(51, 73, 255, 0.5)"

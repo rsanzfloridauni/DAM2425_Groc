@@ -37,7 +37,7 @@ export default function VictoryScreen({ route, navigation }) {
         Congratulations, {name}!
       </Text>
       <Text style={[styles.text, { color: theme.text }]}>
-        You beat the game with {tries} tries left!
+        You beat the game in {tries} tries!
       </Text>
       <Pressable
         onPress={() => navigation.goBack()}

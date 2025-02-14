@@ -1,19 +1,12 @@
-import {
-  Text,
-  View,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  Switch,
-} from 'react-native';
+import { Text, Pressable, SafeAreaView, StyleSheet, Image } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import * as Font from 'expo-font';
 
-export default function LoseScreen({ navigation }) {
-  const { name, theme } = useContext(Context);
+export default function LoseScreen({ route, navigation }) {
+  const { theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const { answer } = route.params;
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -33,6 +26,8 @@ export default function LoseScreen({ navigation }) {
       style={[styles.container, { backgroundColor: theme.background }]}>
       <Image style={styles.image} source={require('../assets/imgini.png')} />
       <Text style={[styles.title, { color: theme.text }]}>You lost :(</Text>
+      <Text style={[styles.text, { color: theme.text }]}>The answer was:</Text>
+      <Text style={[styles.answerText, { color: theme.text }]}>{answer}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         Too bad, better luck next time!
       </Text>
@@ -79,6 +74,14 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 16,
     margin: 5,
+    textAlign: 'center',
+  },
+  answerText: {
+    fontFamily: 'alegraya-sans-bold',
+    letterSpacing: 2,
+    fontSize: 16,
+    margin: 5,
+    textAlign: 'center',
   },
   image: {
     width: 240,

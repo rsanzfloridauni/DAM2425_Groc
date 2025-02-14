@@ -15,7 +15,7 @@ import * as Font from 'expo-font';
 import toImageUri from '../utilities/toImageUri';
 
 export default function Daily({ navigation }) {
-  const { name, token, theme } = useContext(Context);
+  const { name, token, userId, theme } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState(null);
@@ -25,23 +25,83 @@ export default function Daily({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [tries, setTries] = useState(1);
   const [isGuessDisabled, setIsGuessDisabled] = useState(false);
+  const [imgId, setImgId] = useState('');
 
   const onPress = async () => {
     try {
       const response = await fetch(
-        `https://44.199.39.144:8080/imgini/dailyImage?token=${token}`
+        `http://44.199.39.144:8080/imgini/dailyImage?token=${token}`
       );
       const data = await response.json();
 
       setAnswer(data.imageName);
       setTopic(data.theme);
 
-      if (data.image && data.extension) {
+      if (data.imgBase64 && data.extension) {
         const imageUri = toImageUri(data.imgBase64, data.extension);
         setImg(imageUri);
+        setImgId(data.id);
       }
     } catch (error) {
       console.error('Error fetching image:', error);
+    }
+  };
+
+  const registerAttempt = async (success) => {
+    const today = new Date().toISOString().split('T')[0];
+
+    const attemptData = {
+      userId: userId,
+      imageId: imgId,
+      attemptDate: today,
+      tries: tries,
+      success: success,
+    };
+
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/newAttempt?token=${token}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(attemptData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Error ${response.status}: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Error en registerAttempt:', error);
+    }
+  };
+
+  const hasPlayed = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/getAttempt?token=${token}&username=${name}`
+      );
+
+      if (response.status === 404) {
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${await response.text()}`);
+      }
+
+      const data = await response.json();
+
+      if (data && Object.keys(data).length > 0) {
+        setIsGuessDisabled(true);
+        setHiddenTiles(Array(9).fill(false));
+        setText(answer);
+      }
+    } catch (error) {
+      console.error('Error al recuperar intento:', error);
     }
   };
 
@@ -53,6 +113,9 @@ export default function Daily({ navigation }) {
       });
       setFontsLoaded(true);
       onPress();
+      {
+        name !== 'Guest' && hasPlayed();
+      }
     };
     revealStart();
     if (!fontsLoaded) {
@@ -69,16 +132,25 @@ export default function Daily({ navigation }) {
 
   useEffect(() => {
     if (tries === 5) {
-      navigation.navigate('LoseScreen');
+      {
+        name !== 'Guest' && registerAttempt(false);
+      }
       setIsGuessDisabled(true);
+      navigation.navigate('LoseScreen', { answer: answer });
     }
   }, [tries]);
 
   const handleGuess = () => {
     if (text.trim() !== '') {
-      if (text.toLowerCase().includes(answer.toLowerCase())) {
+      if (
+        text.length >= 5 &&
+        answer.toLowerCase().includes(text.toLowerCase())
+      ) {
         setIsGuessDisabled(true);
-        setHiddenTiles(Array(9).fill(false)); // Revelar toda la imagen
+        setHiddenTiles(Array(9).fill(false));
+        {
+          name !== 'Guest' && registerAttempt(true);
+        }
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
         setTries(tries + 1);
@@ -151,9 +223,6 @@ export default function Daily({ navigation }) {
             ))}
           </View>
         </ImageBackground>
-        <Text style={[styles.text, { color: theme.text }]}>
-          Tries left: {tries}
-        </Text>
         <TextInput
           onChangeText={(text) => setText(text)}
           style={styles.input}
