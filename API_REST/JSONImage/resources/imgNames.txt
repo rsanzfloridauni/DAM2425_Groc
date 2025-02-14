@@ -1,0 +1,33 @@
+1:Las dos Fridas:2
+2:El 3 de mayo en Madrid:1
+3:La creacion de Adan:1
+4:El carnaval del Arlequín:3
+5:El matrimonio Arnolfini:5
+6:La rendición de breda:2
+7:El caminante sobre el mar de nubes:3
+8:Las bodas de Cana:3
+9:Campo de trigo con cipreses:3
+10:El jardín de las delicias:2
+11:Los girasoles:1
+12:La gran ola de Kanagawa:1
+13:El grito:1
+14:El Guernica:1
+15:El hijo del hombre:2
+16:El juramento de los horacios:3
+17:Inmersión en azul:5
+18:La lechera:2
+19:La libertad guiando al pueblo:1
+20:La maja vestida:2
+21:La muerte de Marat:3
+22:La persistencia de la memoria:1
+23:Las Meninas:1
+24:La Mona Lisa:1
+25:La consagración de Napoleón:3
+26:Nenúfares:2
+27:La noche estrellada:1
+28:Paseo por el mar:4
+29:El caballero de la mano en el pecho:2
+30:La joven de la perla:1
+31:Saturno devorando a su hijo:2
+32:La última cena:1
+33:El nacimiento de Venus:1
