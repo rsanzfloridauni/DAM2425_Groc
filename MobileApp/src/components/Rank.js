@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#2f124a',
     borderRadius: 5,
-    padding: 10,
+    padding: 5,
     justifyContent: 'space-between',
   },
   image: {

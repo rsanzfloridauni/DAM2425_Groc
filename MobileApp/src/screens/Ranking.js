@@ -105,14 +105,14 @@ export default function Ranking({ navigation }) {
           <Pressable
             style={styles.button}
             onPress={() => setPageIndex(pageIndex - 1)}>
-            <Text style={styles.buttonText}>Anterior</Text>
+            <Text style={styles.text}>Anterior</Text>
           </Pressable>
         )}
         {nextPage && (
           <Pressable
             style={styles.button}
             onPress={() => setPageIndex(pageIndex + 1)}>
-            <Text style={styles.buttonText}>Siguiente</Text>
+            <Text style={styles.text}>Siguiente</Text>
           </Pressable>
         )}
       </View>
@@ -145,8 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#a0c4ff',
     maxWidth: '85%',
     width: '85%',
-    padding: 15,
-    paddingBottom: 15,
+    padding: 10,
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -155,10 +154,10 @@ const styles = StyleSheet.create({
     elevation: 8,
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: '5%',
+    marginTop: '3%',
   },
   title: {
-    margin: 10,
+    margin: 5,
     fontFamily: 'alegraya-sans-bold',
     letterSpacing: 2,
     fontSize: 30,
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 5,
     alignContent: 'center',
   },
   button: {
@@ -176,16 +175,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 5,
     elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },
-  buttonText: {
-    color: '#000',
+  text: {
+    fontFamily: 'alegraya-sans',
+    letterSpacing: 2,
     fontSize: 16,
-    fontWeight: 'bold',
+    margin: 5,
   },
 });
