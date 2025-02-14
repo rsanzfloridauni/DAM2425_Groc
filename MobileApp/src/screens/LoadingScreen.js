@@ -1,14 +1,16 @@
 import { Text, View, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import { useEffect, useState } from 'react';
+import { useAppContext } from './Context';
 import * as Font from 'expo-font';
 
 export default function LoadingScreen({ navigation }) {
+  const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     const loadFontsAndNavigate = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
 
       setFontsLoaded(true);
@@ -24,10 +26,12 @@ export default function LoadingScreen({ navigation }) {
   }, [fontsLoaded, navigation]);
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
       <ActivityIndicator size="large" color="#a0c4ff" />
-      <Text style={styles.text}>Loading, please wait...</Text>
+      <Text style={[styles.text, { color: theme.text }]}>
+        Loading, please wait...
+      </Text>
     </View>
   );
 }

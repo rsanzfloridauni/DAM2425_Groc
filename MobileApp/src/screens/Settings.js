@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  Switch,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
@@ -12,10 +13,17 @@ import DrawerButton from '../components/DrawerButton';
 import UserButton from '../components/UserButton';
 import * as Font from 'expo-font';
 
-export default function Logout({ navigation }) {
-  const { name, setName, setPicture, token, setToken, theme } =
-    useContext(Context);
-
+export default function Settings({ navigation }) {
+  const {
+    name,
+    setName,
+    setPicture,
+    token,
+    setToken,
+    password,
+    setPassword,
+    theme,
+  } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
@@ -34,24 +42,21 @@ export default function Logout({ navigation }) {
   const onPress = async () => {
     try {
       const response = await fetch(
-        `http://44.199.39.144:8080/imgini/logout?token=${token}`,
-        { method: 'GET' }
+        `http://44.199.39.144:8080/imgini/delete?name=${name}&password=${password}&token=${token}`,
+        { method: 'DELETE' }
       );
 
-      if (response.ok) {
-        console.log('Logout exitoso.');
-        setName('');
-        setToken('');
-        setPicture(null);
-        navigation.navigate('Main');
-      } else {
-        console.log(
-          'Error al cerrar sesión. Código de estado:',
-          response.status
-        );
+      if (!response.ok) {
+        throw new Error('Error al eliminar la cuenta');
       }
+
+      setName('');
+      setToken('');
+      setPassword('');
+      setPicture(null);
+      navigation.navigate('Main');
     } catch (error) {
-      console.error('Error en la solicitud:', error);
+      console.error(error);
     }
   };
 
@@ -60,20 +65,17 @@ export default function Logout({ navigation }) {
       style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
       {name !== 'Guest' && <UserButton navigation={navigation} />}
-      <View
-        style={[styles.textContainer, { backgroundColor: theme.background }]}>
+      <View style={styles.textContainer}>
         <Image style={styles.image} source={require('../assets/imgini.png')} />
         <Text style={[styles.text, { color: theme.text }]}>
-          Leaving already?
+          {theme.isDark ? 'Dark 🌙' : 'Light ☀️'} Theme
         </Text>
-        <Text style={[styles.text, { color: theme.text }]}>
-          Don't forget to keep your streak!
-        </Text>
-        <Pressable style={styles.button} onPress={onPress}>
-          <Text style={[styles.buttonText, { color: theme.text }]}>
-            Log Out
-          </Text>
-        </Pressable>
+        <Switch value={theme.isDark} onValueChange={theme.toggleTheme} />
+        {name !== 'Guest' && (
+          <Pressable style={styles.button} onPress={onPress}>
+            <Text style={styles.buttonText}>Delete Account</Text>
+          </Pressable>
+        )}
       </View>
     </SafeAreaView>
   );

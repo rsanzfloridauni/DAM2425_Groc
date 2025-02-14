@@ -1,0 +1,277 @@
+{
+  "name": "piLocal",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "deleteUser",
+      "seq": 7,
+      "request": {
+        "url": "http://localhost:8080/imgini/delete?name=prueba&password=pruebaActuCont&token=text",
+        "method": "DELETE",
+        "headers": [],
+        "params": [
+          {
+            "name": "name",
+            "value": "prueba",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "password",
+            "value": "pruebaActuCont",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "getImage",
+      "seq": 2,
+      "request": {
+        "url": "http://localhost:8080/imgini/image?name=lechera.png&token=text",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "name",
+            "value": "lechera.png",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "getImages",
+      "seq": 6,
+      "request": {
+        "url": "http://localhost:8080/imgini/getImage?token=text",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "getUserData",
+      "seq": 8,
+      "request": {
+        "url": "http://localhost:8080/imgini/getUserData?name=prueba&token=text",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "name",
+            "value": "prueba",
+            "type": "query",
+            "enabled": true
+          },
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "login",
+      "seq": 4,
+      "request": {
+        "url": "http://localhost:8080/imgini/login",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"username\": \"prueba\",\n  \"password\": \"pruebaCont\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "logout",
+      "seq": 5,
+      "request": {
+        "url": "http://localhost:8080/imgini/logout?token=text",
+        "method": "GET",
+        "headers": [],
+        "params": [
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "register",
+      "seq": 3,
+      "request": {
+        "url": "http://localhost:8080/imgini/register",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"username\": \"prueba\",\n  \"password\": \"pruebaCont\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "updateUserData",
+      "seq": 9,
+      "request": {
+        "url": "http://localhost:8080/imgini/update?token=text",
+        "method": "PUT",
+        "headers": [],
+        "params": [
+          {
+            "name": "token",
+            "value": "text",
+            "type": "query",
+            "enabled": true
+          }
+        ],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"username\": \"prueba\",\n  \"password\": \"pruebaCont\",\n  \"points\": 0,\n  \"profilePicture\": \"\"\n}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    }
+  ],
+  "environments": [],
+  "brunoConfig": {
+    "version": "1",
+    "name": "piLocal",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}

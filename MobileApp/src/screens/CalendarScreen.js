@@ -1,18 +1,19 @@
 import { Calendar } from 'react-native-calendars';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { useAppContext } from './Context';
 import { useState, useEffect } from 'react';
 import * as Font from 'expo-font';
 
-export default function CalendarScreen({ navigation }) {
-  const startDate = '2025-02-10';
-  const endDate = '2025-03-04';
+export default function CalendarScreen({ navigation, route }) {
+  const { highlightedDates = [] } = route.params;
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const { theme } = useAppContext();
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -22,67 +23,90 @@ export default function CalendarScreen({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const getDateRange = (start, end) => {
-    let dates = {};
-    let currentDate = new Date(start);
-    let lastDate = new Date(end);
+  const markDates = (datesArray) => {
+    if (!datesArray || datesArray.length === 0) return {};
 
-    while (currentDate <= lastDate) {
-      const formattedDate = currentDate.toISOString().split('T')[0];
-      dates[formattedDate] = {
-        color: '#70d7c7',
-        textColor: 'white',
-        startingDay: formattedDate === start,
-        endingDay: formattedDate === end,
+    let marked = {};
+    datesArray.forEach((date) => {
+      marked[date] = {
+        customStyles: {
+          container: {
+            backgroundColor: '#d3a3ff',
+            borderRadius: 8,
+          },
+          text: {
+            color: theme.text,
+            fontWeight: 'bold',
+          },
+        },
       };
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
+    });
+    return marked;
   };
 
-  const [markedDates, setMarkedDates] = useState(
-    getDateRange(startDate, endDate)
+  const [markedDates, setMarkedDates] = useState(() =>
+    markDates(highlightedDates)
   );
 
+  useEffect(() => {
+    setMarkedDates(markDates(highlightedDates));
+  }, [highlightedDates]);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Current Streak</Text>
-      <Calendar
-        markedDates={markedDates}
-        markingType={'period'}
-        theme={{
-          backgroundColor: '#f5f5f5', // Fondo del calendario
-          calendarBackground: '#ffffff', // Fondo dentro del calendario
-          textSectionTitleColor: '#b6c1cd', // Color del texto de los títulos (días de la semana)
-          selectedDayBackgroundColor: '#ff6347', // Color del día seleccionado (rojo tomate)
-          selectedDayTextColor: '#ffffff', // Texto del día seleccionado
-          todayTextColor: '#ff4500', // Color del texto del día actual (naranja)
-          dayTextColor: '#2d4150', // Color del texto de los días normales
-          textDisabledColor: '#d9e1e8', // Color de los días deshabilitados
-          dotColor: '#00adf5', // Color del punto en fechas marcadas
-          selectedDotColor: '#ffffff', // Color del punto en fechas seleccionadas
-          arrowColor: '#ff4500', // Color de las flechas de navegación
-          monthTextColor: '#4f5d75', // Color del mes en la parte superior
-          indicatorColor: 'blue', // Color del indicador de carga
-          textDayFontFamily: 'alegraya-sans',
-          textMonthFontFamily: 'alegraya-sans-bold',
-          textDayHeaderFontFamily: 'alegraya-sans',
-          textDayFontSize: 16, // Tamaño del texto de los días
-          textMonthFontSize: 18, // Tamaño del texto del mes
-          textDayHeaderFontSize: 14, // Tamaño del texto del encabezado
-        }}
-      />
-      <Pressable onPress={() => navigation.goBack()} style={styles.button}>
-        <Text style={styles.text}>Go Back</Text>
-      </Pressable>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.text }]}>Hit History</Text>
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Calendar
+          markedDates={markedDates}
+          markingType={'custom'}
+          theme={{
+            backgroundColor: theme.background,
+            calendarBackground: theme.background,
+            textSectionTitleColor: theme.text,
+            todayTextColor: '#ff4500',
+            dayTextColor: theme.text,
+            monthTextColor: theme.text,
+            indicatorColor: 'blue',
+            textDayFontFamily: 'alegraya-sans',
+            textMonthFontFamily: 'alegraya-sans-bold',
+            textDayHeaderFontFamily: 'alegraya-sans',
+            textDayFontSize: 16,
+            textMonthFontSize: 18,
+            textDayHeaderFontSize: 14,
+          }}
+        />
+        <Pressable onPress={() => navigation.goBack()} style={styles.button}>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardContainer: {
+    backgroundColor: 'white',
+    width: '85%',
+    padding: 20,
+    paddingBottom: 30,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
     alignItems: 'center',
   },
   title: {

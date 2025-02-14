@@ -4,13 +4,14 @@ import Context from './Context';
 import * as Font from 'expo-font';
 
 export default function Main({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, password, setPassword, setToken, theme } =
+    useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -28,22 +29,52 @@ export default function Main({ navigation }) {
     navigation.navigate('Register');
   };
 
-  const toApp = () => {
-    navigation.navigate('LoadingScreen');
+  const toApp = async () => {
+    setName('Guest');
+    setPassword('');
+
+    try {
+      const response = await fetch('http://44.199.39.144:8080/imgini/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: 'Guest', password: '' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en la autenticación');
+      }
+
+      const token = await response.text();
+      setToken(token);
+
+      navigation.navigate('LoadingScreen');
+    } catch (error) {
+      console.error('Error en la autenticación:', error);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
-      <View style={styles.cardContainer}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
         <Pressable onPress={toLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={[styles.buttonText, { color: theme.text }]}>Login</Text>
         </Pressable>
         <Pressable onPress={toRegister} style={styles.button}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={[styles.buttonText, { color: theme.text }]}>
+            Register
+          </Text>
         </Pressable>
         <Pressable onPress={toApp} style={styles.button}>
-          <Text style={styles.buttonText}>Play As Guest</Text>
+          <Text style={[styles.buttonText, { color: theme.text }]}>
+            Play As Guest
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -57,12 +88,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardContainer: {
-    backgroundColor: 'white',
     width: '85%',
     padding: 20,
     paddingBottom: 30,
     borderRadius: 15,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
