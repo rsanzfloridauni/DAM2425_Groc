@@ -2,8 +2,10 @@ package imgini.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+
+import imgini.model.entity.Attempt;
 
 public class Utilities {
 	public static int findToken(ArrayList<String> tokens, String token) {
@@ -24,7 +26,7 @@ public class Utilities {
 		return false;
 	}
 	
-	public static int getStreak(List<Attempt> atts) {
+	public static int getStreak(Page<Attempt> atts) {
 		LocalDate today = LocalDate.now();
 		LocalDate attemptDate;
 		int streak = 0;

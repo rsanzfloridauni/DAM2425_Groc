@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"imgini"},{"l":"imgini.config"},{"l":"imgini.controller"},{"l":"imgini.model"},{"l":"imgini.model.dto"},{"l":"imgini.model.entity"},{"l":"imgini.repository"}];updateSearchResults();
