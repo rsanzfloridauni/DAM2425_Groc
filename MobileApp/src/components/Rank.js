@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAppContext } from '../screens/Context';
 import * as Font from 'expo-font';
 import toImage from '../utilities/toImageUri';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Rank = ({ object, navigation }) => {
   const { theme } = useAppContext();
@@ -23,7 +24,9 @@ const Rank = ({ object, navigation }) => {
   }, [fontsLoaded]);
 
   useEffect(() => {
-    setUserImage(toImage(object.profilePicture, object.extension));
+    if(object.profilePicture !== "" || object.profilePicture !== null){
+      setUserImage(toImage(object.profilePicture, object.extension));
+    }
   }, [object]);
 
   return (
@@ -39,7 +42,16 @@ const Rank = ({ object, navigation }) => {
           pic: userImage,
         });
       }}>
-      <Image source={{ uri: userImage }} style={styles.image} />
+      {object.profilePicture ? (
+          <Image source={{ uri: userImage }} style={styles.image} />
+        ) : (
+          <Icon
+            name="person"
+            size={50}
+            color={theme.isDark ? '#fff' : '#000'}
+          />
+        )}
+      
       <Text style={[styles.text, { color: theme.text }]}>
         {object.username}
       </Text>

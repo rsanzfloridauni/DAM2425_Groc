@@ -2,6 +2,7 @@ import { StyleSheet, Text, Image, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../screens/Context';
 import * as Font from 'expo-font';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const RankUser = ({ object, navigation }) => {
   const { theme } = useAppContext();
@@ -27,7 +28,15 @@ const RankUser = ({ object, navigation }) => {
         { backgroundColor: theme.background, borderColor: theme.text },
       ]}
       onPress={() => navigation.navigate('User')}>
-      <Image source={{uri: object.picture}} style={styles.image} />
+      {object.picture ? (
+          <Image source={{uri: object.picture}} style={styles.image} />
+        ) : (
+          <Icon
+            name="person"
+            size={50}
+            color={theme.isDark ? '#fff' : '#000'}
+          />
+        )}
       <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         {object.points} points
