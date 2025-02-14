@@ -22,19 +22,22 @@ public class Main {
 			List<Map<String, Object>> images = new ArrayList<>();
 			File imgsDir = new File("resources/images");
 			ArrayList<String> idNames = extractImgsNames(new File("resources/imgNames.txt"));
+			Integer currentIndex = 0;
 
-			for (File subDir : Objects.requireNonNull(imgsDir.listFiles())) {
+			for (File subDir : imgsDir.listFiles()) {
 				File[] imgs = subDir.listFiles();
+				String theme = subDir.getName();
 				for (int i = 0; i < imgs.length; i++) {
 					Map<String, Object> jsonData = new LinkedHashMap<>();
-					String[] imgData = idNames.get(i).split(":");
+					String[] imgData = idNames.get(currentIndex).split(":");
 					jsonData.put("id", Integer.parseInt(imgData[0]));
 					jsonData.put("imageName", imgData[1]);
-					jsonData.put("theme", subDir.getName());
+					jsonData.put("theme", theme);
 					jsonData.put("difficulty", Integer.parseInt(imgData[2]));
 					jsonData.put("imgBase64", imgTo64(imgs[i]));
 					jsonData.put("extension", imgs[i].getName().substring(imgs[i].getName().indexOf('.') + 1));
 					images.add(jsonData);
+					currentIndex++;
 				}
 			}
 

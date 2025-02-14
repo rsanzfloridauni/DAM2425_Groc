@@ -1,33 +1,78 @@
-1:Las dos Fridas:2
-2:El 3 de mayo en Madrid:1
-3:La creacion de Adan:1
-4:El carnaval del Arlequín:3
-5:El matrimonio Arnolfini:5
-6:La rendición de breda:2
-7:El caminante sobre el mar de nubes:3
-8:Las bodas de Cana:3
-9:Campo de trigo con cipreses:3
-10:El jardín de las delicias:2
-11:Los girasoles:1
-12:La gran ola de Kanagawa:1
-13:El grito:1
-14:El Guernica:1
-15:El hijo del hombre:2
-16:El juramento de los horacios:3
-17:Inmersión en azul:5
-18:La lechera:2
-19:La libertad guiando al pueblo:1
-20:La maja vestida:2
-21:La muerte de Marat:3
-22:La persistencia de la memoria:1
-23:Las Meninas:1
-24:La Mona Lisa:1
-25:La consagración de Napoleón:3
-26:Nenúfares:2
-27:La noche estrellada:1
-28:Paseo por el mar:4
-29:El caballero de la mano en el pecho:2
-30:La joven de la perla:1
-31:Saturno devorando a su hijo:2
-32:La última cena:1
-33:El nacimiento de Venus:1
+1:Abbey Road:2
+2:Born in the U.S.A.:3
+3:The Dark Side of the Moon:1
+4:Led Zeppelin:4
+5:Nevermind:2
+6:Thriller:1
+7:Braveheart:3
+8:El Bueno, el Feo y el Malo:3
+9:Los Cazafantasmas:2
+10:E.T. el Extraterrestre:1
+11:Forrest Gump:1
+12:Gladiator:2
+13:Jurassic Park:1
+14:King Kong:1
+15:El Mago de Oz:3
+16:The Matrix:2
+17:El Planeta de los Simios:1
+18:Pulp Fiction:2
+19:Regreso al Futuro:1
+20:Rocky:2
+21:El Rey León:2
+22:Star Wars:1
+23:Superman:2
+24:Croquetas:2
+25:Desayuno Inglés:4
+26:Fabada Asturiana:2
+27:Gazpacho:3
+28:Jamón:1
+29:Pizza:1
+30:Ratatouille:3
+31:Sushi:1
+32:Tacos:2
+33:Tortilla de patatas:2
+34:Muralla China:2
+35:Coliseo:1
+36:Isla de Pascua:2
+37:Machu Picchu:3
+38:Piramides Guiza:1
+39:Torre de Pisa:1
+40:Sagrada Familia:2
+41:Estatua de la Libertad:1
+42:Stonehenge:3
+43:Ópera de Sídney:3
+44:Taj Mahal:3
+45:Torre Eiffel:1
+46:Las dos Fridas:2
+47:El 3 de mayo en Madrid:1
+48:La creacion de Adan:1
+49:El carnaval del Arlequín:3
+50:El matrimonio Arnolfini:5
+51:La rendición de breda:2
+52:El caminante sobre el mar de nubes:3
+53:Las bodas de Cana:3
+54:Campo de trigo con cipreses:3
+55:El jardín de las delicias:2
+56:Los girasoles:1
+57:La gran ola de Kanagawa:1
+58:El grito:1
+59:El Guernica:1
+60:El hijo del hombre:2
+61:El juramento de los horacios:3
+62:Inmersión en azul:5
+63:La lechera:2
+64:La libertad guiando al pueblo:1
+65:La maja vestida:2
+66:La muerte de Marat:3
+67:La persistencia de la memoria:1
+68:Las Meninas:1
+69:La Mona Lisa:1
+70:La consagración de Napoleón:3
+71:Nenúfares:2
+72:La noche estrellada:1
+73:Paseo por el mar:4
+74:El caballero de la mano en el pecho:2
+75:La joven de la perla:1
+76:Saturno devorando a su hijo:2
+77:La última cena:1
+78:El nacimiento de Venus:1
