@@ -23,7 +23,3 @@
 hs_err_pid*
 replay_pid*
 /bin/
-
-# Image Files
-/API_REST/SpringbootPI/src/main/resources/static/imgs/
-/API_REST/SpringbootPI/target/classes/static/imgs/
