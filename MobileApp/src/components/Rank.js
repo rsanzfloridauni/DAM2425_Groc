@@ -7,7 +7,7 @@ import toImage from '../utilities/toImageUri';
 const Rank = ({ object, navigation }) => {
   const { theme } = useAppContext();
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [userImage, setUserImage] = useState('');
+  const [userImage, setUserImage] = useState(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -32,12 +32,13 @@ const Rank = ({ object, navigation }) => {
         styles.container,
         { backgroundColor: theme.background, borderColor: theme.text },
       ]}
-      onPress={() =>
+      onPress={() => {
+        console.log('Navegando a UserViewed con:', object.username);
         navigation.navigate('UserViewed', {
           user: object.username,
           pic: userImage,
-        })
-      }>
+        });
+      }}>
       <Image source={{ uri: userImage }} style={styles.image} />
       <Text style={[styles.text, { color: theme.text }]}>
         {object.username}

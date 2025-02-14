@@ -37,12 +37,6 @@ export default function Ranking({ navigation }) {
     if (!fontsLoaded) {
       loadFonts();
     }
-
-    if (points == null) {
-      getUserPoints(
-        `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
-      );
-    }
   }, []);
 
   useEffect(() => {
@@ -50,28 +44,15 @@ export default function Ranking({ navigation }) {
     getInfoRanking(apiUrl);
   }, [pageIndex]);
 
-  const getUserPoints = async (url) => {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        const result = await response.json();
-        setPoints(result.points);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getInfoRanking = async (url) => {
     try {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setUsers(result.users);
+        setUsers(result.users.filter(user => user.username !== "Guest"));
         setTotalPages(result.numPages);
         setPreviousPage(result.previousPage);
         setNextPage(result.nextPage);
-        Alert.alert('Datos añadidos de la API con éxito!');
       } else {
         console.error('Error en la API:', response.status);
       }
@@ -91,7 +72,7 @@ export default function Ranking({ navigation }) {
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
         ]}>
-        <Text style={[styles.title, { color: theme.text }]}>Ranking</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Ranking 🏆</Text>
         <FlatList
           data={users}
           renderItem={({ item }) => (
@@ -105,14 +86,14 @@ export default function Ranking({ navigation }) {
           <Pressable
             style={styles.button}
             onPress={() => setPageIndex(pageIndex - 1)}>
-            <Text style={styles.text}>Anterior</Text>
+            <Text style={styles.text}>Anterior 🔙</Text>
           </Pressable>
         )}
         {nextPage && (
           <Pressable
             style={styles.button}
             onPress={() => setPageIndex(pageIndex + 1)}>
-            <Text style={styles.text}>Siguiente</Text>
+            <Text style={styles.text}>Siguiente 🔜</Text>
           </Pressable>
         )}
       </View>
@@ -122,7 +103,7 @@ export default function Ranking({ navigation }) {
             styles.cardContainer,
             { backgroundColor: theme.card, shadowColor: theme.shadow },
           ]}>
-          <Text style={[styles.title, { color: theme.text }]}>Your Rank</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Your Rank 🏆</Text>
           <RankUser
             object={{
               picture,

@@ -16,10 +16,12 @@ import Logo from '../components/Logo';
 import * as Font from 'expo-font';
 
 export default function User({ navigation }) {
-  const { name, theme } = useContext(Context);
+  const { name, theme, token } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const route = useRoute();
-  const { username, pic } = route.params;
+  const { user, pic } = route.params;
+  const [attemptDays, setAttemptDays] = useState([]);
+  const [linkStreak, setLinkStreak] = useState(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -35,26 +37,79 @@ export default function User({ navigation }) {
     }
   }, [fontsLoaded]);
 
+  useEffect(() => {
+    getUserInfo(
+      `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${user}`
+    );
+  }, []);
+
+  useEffect(() => {
+    if (linkStreak) {
+      getUserStreak();
+    }
+  }, [linkStreak]); 
+
+  const getUserInfo = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        setLinkStreak(result.streakLink.replace('localhost', '44.199.39.144'));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUserStreak = async () => {
+    try {
+      const response = await fetch(linkStreak);
+      if (response.ok) {
+        const result = await response.json();
+
+        const dates = result.attempts.map((attempt) => attempt.attemptDate);
+        console.log(dates);
+
+        setAttemptDays(dates);
+      } else {
+        console.error('Error en la respuesta de la API');
+      }
+    } catch (error) {
+      console.error('Error obteniendo el streak del usuario:', error);
+    }
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
       {name !== 'Guest' && <UserButton navigation={navigation} />}
-      <Logo />
+      <Logo/>
       <View
         style={[
           styles.cardContainer,
           { backgroundColor: theme.card, shadowColor: theme.shadow },
         ]}>
-        <Text style={[styles.title, { color: theme.text }]}>{username}</Text>
+        <Text style={[styles.title, { color: theme.text }]}>{user}</Text>
         <Image style={styles.image} source={{ uri: pic }} />
         <Pressable
-          onPress={() => navigation.navigate('CalendarScreen')}
+          onPress={() =>
+            navigation.navigate('CalendarScreen', {
+              highlightedDates: attemptDays,
+            })
+          }
           style={styles.button}>
           <Text style={[styles.text, { color: theme.text }]}>
-            Check This User's Streak
+            Check This User's Streak 📅
           </Text>
         </Pressable>
+      </View>
+      <View style={[styles.buttondiv, { color: theme.text }]}>
+      <Pressable onPress={() => navigation.navigate('Ranking')} style={styles.button}>
+        <Text style={[styles.text, { color: theme.text }]}>
+          Go Back 🔙
+        </Text>
+      </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -92,16 +147,20 @@ const styles = StyleSheet.create({
     height: 120,
     margin: 10,
     marginBottom: 20,
+    borderRadius: 60,
+    borderColor: 'black',
+    borderWidth: 1,
   },
   text: {
     fontFamily: 'alegraya-sans',
     letterSpacing: 2,
     fontSize: 16,
     margin: 5,
+    textAlign: "center",
   },
   button: {
     backgroundColor: '#a0c4ff',
-    width: 'auto',
+    width: '80%',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
@@ -114,5 +173,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 5,
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
 });

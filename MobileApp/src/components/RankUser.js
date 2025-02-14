@@ -27,7 +27,7 @@ const RankUser = ({ object, navigation }) => {
         { backgroundColor: theme.background, borderColor: theme.text },
       ]}
       onPress={() => navigation.navigate('User')}>
-      <Image source={object.picture} style={styles.image} />
+      <Image source={{uri: object.picture}} style={styles.image} />
       <Text style={[styles.text, { color: theme.text }]}>{object.name}</Text>
       <Text style={[styles.text, { color: theme.text }]}>
         {object.points} points

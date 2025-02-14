@@ -33,7 +33,6 @@ export default function User({ navigation }) {
   const [provisionalPwd, setProvisionalPwd] = useState(null);
   const [base64, setBase64] = useState(null);
   const [extension, setExtension] = useState(null);
-  const isFocused = useIsFocused();
   const [attemptDays, setAttemptDays] = useState([]);
 
 
@@ -52,13 +51,17 @@ export default function User({ navigation }) {
   }, [fontsLoaded]);
 
   useEffect(() => {
-  if (isFocused) {
-    getUserInfo(
-      `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
-    );
+  getUserInfo(
+    `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}`
+  );
+}, []);
+
+useEffect(() => {
+  if (linkStreak) {
     getUserStreak();
   }
-}, [isFocused]);
+}, [linkStreak]); // Se ejecuta cuando linkStreak cambia
+
 
   const getUserInfo = async (url) => {
     try {
@@ -68,10 +71,7 @@ export default function User({ navigation }) {
         setExtension(result.extension);
         setProvisionalName(result.username);
         setProvisionalPwd(result.password);
-        // if(picture == null){
-        //   setProvisionalImage(toImageUri(result.base64, result.extension));
-        // }
-        setLinkStreak(result.linkStreak);
+        setLinkStreak(result.streakLink.replace("localhost", "44.199.39.144"));
         setPoints(result.points);
       }
     } catch (error) {
@@ -86,6 +86,7 @@ export default function User({ navigation }) {
       const result = await response.json();
 
       const dates = result.attempts.map((attempt) => attempt.attemptDate);
+      console.log(dates);
       
       setAttemptDays(dates);
     } else {
@@ -135,7 +136,7 @@ export default function User({ navigation }) {
       quality: 1,
     });
     if (!result.canceled) {
-      setProvisionalImage(result.assets[0].uri);
+      setPicture(result.assets[0].uri);
       const base64Image = await toBase64(result.assets[0].uri);
       setBase64(base64Image);
     }
@@ -149,7 +150,7 @@ export default function User({ navigation }) {
       quality: 1,
     });
     if (!result.canceled) {
-      setProvisionalImage(result.assets[0].uri);
+      setPicture(result.assets[0].uri);
       
       const base64Image = await toBase64(result.assets[0].uri);
       setBase64(base64Image);
@@ -183,7 +184,7 @@ export default function User({ navigation }) {
           <Image style={styles.image} source={{ uri: picture ? picture : provisionalImage }} />
           {editing && (
             <Pressable onPress={pickImage} style={styles.imageButton}>
-              <Text style={styles.text}>Change</Text>
+              <Text style={styles.text}>Change ✏️</Text>
             </Pressable>
           )}
         </View>
@@ -221,14 +222,14 @@ export default function User({ navigation }) {
           }
           style={styles.button}>
           <Text style={[styles.text, { color: theme.text }]}>
-            Check Your Streak
+            Check Your Streak 
           </Text>
         </Pressable>
         <Pressable
           onPress={editing ? handleSave : () => setEditing(true)}
           style={styles.button}>
           <Text style={[styles.text, { color: theme.text }]}>
-            {editing ? 'Save Changes' : 'Edit Profile'}
+            {editing ? 'Save Changes ✅' : 'Edit Profile ✏️'}
           </Text>
         </Pressable>
       </View>

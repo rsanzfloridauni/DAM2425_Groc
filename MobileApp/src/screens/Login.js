@@ -15,6 +15,7 @@ export default function Login({ navigation }) {
     theme,
     setToken,
     setUserId,
+    setPoints,
   } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -44,11 +45,12 @@ export default function Login({ navigation }) {
 
       try {
         const response2 = await fetch(
-          `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+          `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}`
         );
         if (response2.ok) {
           const result = await response2.json();
           setUserId(result.id);
+          setPoints(result.points);
           if (result.profilePicture === '' || result.profilePicture === null) {
             setPicture(null);
           } else {
