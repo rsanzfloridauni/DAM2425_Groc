@@ -3,16 +3,14 @@ package imgini.model.dto;
 public class UserInfo {
 	private Integer id;
 	private String username;
-	private String password;
 	private Integer points;
 	private String profilePicture;
 	private String extension;
 	private String streakLink;
 
-	public UserInfo(Integer id, String username, String password, Integer points, String profilePicture, String extension, String streakLink) {
+	public UserInfo(Integer id, String username, Integer points, String profilePicture, String extension, String streakLink) {
 		this.id = id;
 		this.username = username;
-		this.password = password;
 		this.points = points;
 		this.profilePicture = profilePicture;
 		this.extension = extension;
@@ -37,14 +35,6 @@ public class UserInfo {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Integer getPoints() {

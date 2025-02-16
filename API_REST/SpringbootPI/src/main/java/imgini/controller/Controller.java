@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -184,7 +185,7 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		UserInfo userInfo = new UserInfo(user.get().getId(), username, user.get().getPassword(), user.get().getPoints(),
+		UserInfo userInfo = new UserInfo(user.get().getId(), username, user.get().getPoints(),
 				user.get().getProfilePicture(), user.get().getExtension(),
 				"http://localhost:8080/imgini/streak?token=" + userToken + "&username=" + username + "&page=1&size=10");
 
@@ -286,12 +287,13 @@ public class Controller {
 	 */
 	@PostMapping("imgini/register")
 	public ResponseEntity<Object> register(@RequestBody UserDTO userDTO) {
-		Optional<User> dbUser = userRepository.findByUserAndPassword(userDTO.getUsername(), userDTO.getPassword());
+		String passwordHash = DigestUtils.sha256Hex(userDTO.getPassword());
+		Optional<User> dbUser = userRepository.findByUserAndPassword(userDTO.getUsername(), passwordHash);
 		if (dbUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		} else {
 			int totalUsers = (int) userRepository.count();
-			userRepository.save(new User((totalUsers + 1), userDTO.getUsername(), userDTO.getPassword()));
+			userRepository.save(new User((totalUsers + 1), userDTO.getUsername(), passwordHash));
 			String uuid = UUID.randomUUID().toString();
 			String token = uuid.split("-")[0];
 			tokens.add(token);
@@ -306,7 +308,8 @@ public class Controller {
 	 */
 	@PostMapping("imgini/login")
 	public ResponseEntity<Object> login(@RequestBody UserDTO userDTO) {
-		Optional<User> user = userRepository.findByUserAndPassword(userDTO.getUsername(), userDTO.getPassword());
+		String passwordHash = DigestUtils.sha256Hex(userDTO.getPassword());
+		Optional<User> user = userRepository.findByUserAndPassword(userDTO.getUsername(), passwordHash);
 		if (user.isPresent()) {
 			String uuid = UUID.randomUUID().toString();
 			String token = uuid.split("-")[0];
@@ -369,7 +372,8 @@ public class Controller {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		Optional<User> user = userRepository.findByUserAndPassword(name, password);
+		String passwordHash = DigestUtils.sha256Hex(password);
+		Optional<User> user = userRepository.findByUserAndPassword(name, passwordHash);
 		if (user.isPresent()) {
 			userRepository.delete(user.get());
 			List<Attempt> userAttempts = attemptRepository.getAttByUserId(user.get().getId());
@@ -384,7 +388,7 @@ public class Controller {
 	}
 
 	/**
-	 * @param userToken Token that will authenticate the user
+	 * @param userToken   Token that will authenticate the user
 	 * @param updatedUser Object with the updated information of the user
 	 * @return HttpStatus NOT_FOUND if the user couldn't be found, or HttpStatus
 	 *         NO_CONTENT if the user has been updated successfully
@@ -398,9 +402,10 @@ public class Controller {
 
 		Optional<User> userOptional = userRepository.getUserByName(updatedUser.getOldName());
 		if (userOptional.isPresent()) {
+			String passwordHash = DigestUtils.sha256Hex(updatedUser.getPassword());
 			User user = userOptional.get();
 			user.setUsername(updatedUser.getNewName());
-			user.setPassword(updatedUser.getPassword());
+			user.setPassword(passwordHash);
 			user.setProfilePicture(updatedUser.getProfilePicture());
 			user.setExtension(updatedUser.getExtension());
 
