@@ -47,14 +47,22 @@ Ingini also has a premium subscription for once every three months to help you m
 ## Getting Started
 
 ### Solve some possible issues
+We are having issues creating the apk for downloading the app. 
+The code is completed, its just an Android Studio Issue
 
 ## Documentation
 
 ### Web API Documentation
+ * [Web API](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Web%20API%20%26%20BDD%20Imgini.pdf)
 
 ### PI Documentation
+* [PI](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Documentation%20Imgini.pdf)
+
+### Mockup documentation
+* [Mockup]()
 
 ## Application Download
+* [Code here](https://github.com/rsanzfloridauni/DAM2425_Groc/tree/main/MobileApp)
 
 ## Video Demo
-
+Soon!
