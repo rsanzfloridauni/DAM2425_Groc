@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   Pressable,
+  Alert,
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import { useRoute } from '@react-navigation/native';
@@ -21,7 +22,6 @@ export default function User({ navigation }) {
   const route = useRoute();
   const { user, pic } = route.params;
   const [attemptDays, setAttemptDays] = useState([]);
-  const [linkStreak, setLinkStreak] = useState(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -41,35 +41,31 @@ export default function User({ navigation }) {
     getUserInfo(
       `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${user}`
     );
-  }, []);
-
-  useEffect(() => {
-    if (linkStreak) {
-      getUserStreak();
-    }
-  }, [linkStreak]); 
+  }, [user]); // Ahora se ejecuta cada vez que cambia el usuario
 
   const getUserInfo = async (url) => {
     try {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setLinkStreak(result.streakLink.replace('localhost', '44.199.39.144'));
+        const streakUrl = result.streakLink.replace(
+          'localhost',
+          '44.199.39.144'
+        );
+        getUserStreak(streakUrl); // Llamar directamente aquí
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getUserStreak = async () => {
+  const getUserStreak = async (url) => {
     try {
-      const response = await fetch(linkStreak);
+      const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-
         const dates = result.attempts.map((attempt) => attempt.attemptDate);
         console.log(dates);
-
         setAttemptDays(dates);
       } else {
         console.error('Error en la respuesta de la API');
@@ -84,7 +80,7 @@ export default function User({ navigation }) {
       style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
       {name !== 'Guest' && <UserButton navigation={navigation} />}
-      <Logo/>
+      <Logo />
       <View
         style={[
           styles.cardContainer,
@@ -105,11 +101,11 @@ export default function User({ navigation }) {
         </Pressable>
       </View>
       <View style={[styles.buttondiv, { color: theme.text }]}>
-      <Pressable onPress={() => navigation.navigate('Ranking')} style={styles.button}>
-        <Text style={[styles.text, { color: theme.text }]}>
-          Go Back 🔙
-        </Text>
-      </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('Ranking')}
+          style={styles.button}>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back 🔙</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -156,7 +152,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 16,
     margin: 5,
-    textAlign: "center",
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#a0c4ff',
