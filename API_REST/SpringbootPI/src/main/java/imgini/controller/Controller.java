@@ -292,8 +292,8 @@ public class Controller {
 		if (dbUser.isPresent()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		} else {
-			int totalUsers = (int) userRepository.count();
-			userRepository.save(new User((totalUsers + 1), userDTO.getUsername(), passwordHash));
+			Optional<User> lastUser = userRepository.findTopByOrderByIdDesc();
+			userRepository.save(new User(lastUser.get().getId() + 1, userDTO.getUsername(), passwordHash));
 			String uuid = UUID.randomUUID().toString();
 			String token = uuid.split("-")[0];
 			tokens.add(token);
@@ -337,8 +337,8 @@ public class Controller {
 		if (attempt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		} else {
-			int totalAttempts = (int) attemptRepository.count();
-			attemptRepository.save(new Attempt(totalAttempts + 1, attemptDTO.getUserId(), attemptDTO.getImageId(),
+			Optional<Attempt> lastAttempt = attemptRepository.findTopByOrderByIdDesc();
+			attemptRepository.save(new Attempt(lastAttempt.get().getId() + 1, attemptDTO.getUserId(), attemptDTO.getImageId(),
 					attemptDTO.getAttemptDate(), attemptDTO.getTries(), attemptDTO.isSuccess()));
 
 			Optional<User> userOptional = userRepository.getUserById(attemptDTO.getUserId());

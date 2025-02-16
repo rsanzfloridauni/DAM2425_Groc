@@ -17,4 +17,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 	
 	@Query(value = "{ 'id': ?0 }")
 	Optional<User> getUserById(Integer id);
+	
+	Optional<User> findTopByOrderByIdDesc();
 }
