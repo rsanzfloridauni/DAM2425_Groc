@@ -36,7 +36,7 @@ public class Utilities {
 				break;
 			}
 			streak++;
-			today.minusDays(1);
+			today = today.minusDays(1);
 		}
 		return streak;
 	}

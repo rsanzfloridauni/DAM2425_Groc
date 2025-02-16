@@ -223,7 +223,7 @@ public class Controller {
 		ArrayList<AttemptInfo> attempts = new ArrayList<AttemptInfo>();
 
 		for (Attempt att : attemptPage.getContent()) {
-			List<Imagen> selectedImg = imagenRepository.getImgById(att.getImageId() + 1);
+			List<Imagen> selectedImg = imagenRepository.getImgById(att.getImageId());
 			attempts.add(new AttemptInfo(selectedImg.get(0).getImageName(), att.getAttemptDate(), att.getTries(),
 					att.isSuccess()));
 		}
