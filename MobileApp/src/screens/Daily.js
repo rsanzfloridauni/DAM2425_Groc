@@ -130,38 +130,36 @@ export default function Daily({ navigation }) {
     }
   }, [visible]);
 
-  const handleGuess = () => {
-    if (text.trim() === '') {
-      setVisible(true);
-      return;
-    }
-
-    if (text.length >= 5 && answer.toLowerCase().includes(text.toLowerCase())) {
+  useEffect(() => {
+    if (tries === 5) {
+      {
+        name !== 'Guest' && registerAttempt(false);
+      }
       setIsGuessDisabled(true);
-      setHiddenTiles(Array(9).fill(false));
-
-      if (name !== 'Guest') {
-        registerAttempt(true);
-      }
-
-      navigation.navigate('VictoryScreen', { tries: tries });
-      return;
+      navigation.navigate('LoseScreen', { answer: answer });
     }
+  }, [tries]);
 
-    setTries((prevTries) => {
-      if (prevTries + 1 >= 5) {
-        if (name !== 'Guest') {
-          registerAttempt(false);
-        }
-
+  const handleGuess = () => {
+    if (text.trim() !== '') {
+      if (
+        text.length >= 5 &&
+        answer.toLowerCase().includes(text.toLowerCase())
+      ) {
         setIsGuessDisabled(true);
-        navigation.navigate('LoseScreen', { answer: answer });
+        setHiddenTiles(Array(9).fill(false));
+        {
+          name !== 'Guest' && registerAttempt(true);
+        }
+        navigation.navigate('VictoryScreen', { tries: tries });
+      } else {
+        setTries(tries + 1);
+        revealTile();
+        setText('');
       }
-      return prevTries + 1;
-    });
-
-    revealTile();
-    setText('');
+    } else {
+      setVisible(true);
+    }
   };
 
   const revealStart = () => {
