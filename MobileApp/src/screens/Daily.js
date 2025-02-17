@@ -27,6 +27,41 @@ export default function Daily({ navigation }) {
   const [isGuessDisabled, setIsGuessDisabled] = useState(false);
   const [imgId, setImgId] = useState('');
 
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+      });
+      setFontsLoaded(true);
+      onPress();
+      {
+        name !== 'Guest' && hasPlayed();
+      }
+    };
+    revealStart();
+    if (!fontsLoaded) {
+      loadFonts();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (visible) {
+      const timer = setTimeout(() => setVisible(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (tries === 5) {
+      {
+        name !== 'Guest' && registerAttempt(false);
+      }
+      setIsGuessDisabled(true);
+      navigation.navigate('LoseScreen', { answer: answer });
+    }
+  }, [tries]);
+
   const onPress = async () => {
     try {
       const response = await fetch(
@@ -34,7 +69,7 @@ export default function Daily({ navigation }) {
       );
       const data = await response.json();
 
-      setAnswer(data.imageName);
+      setAnswer(removeAccents(data.imageName));
       setTopic(data.theme);
 
       if (data.imgBase64 && data.extension) {
@@ -47,35 +82,37 @@ export default function Daily({ navigation }) {
     }
   };
 
-  const registerAttempt = async (success) => {
-    const today = new Date().toISOString().split('T')[0];
+  const handleGuess = () => {
+    if (text.trim() !== '') {
+      const normalizedText = removeAccents(text); // Normaliza la entrada del usuario
 
-    const attemptData = {
-      userId: userId,
-      imageId: imgId,
-      attemptDate: today,
-      tries: tries,
-      success: success,
-    };
-
-    try {
-      const response = await fetch(
-        `http://44.199.39.144:8080/imgini/newAttempt?token=${token}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(attemptData),
+      if (normalizedText.length >= 5 && answer.includes(normalizedText)) {
+        setIsGuessDisabled(true);
+        setHiddenTiles(Array(9).fill(false));
+        if (name !== 'Guest') {
+          registerAttempt(true);
         }
-      );
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Error ${response.status}: ${errorMessage}`);
+        navigation.navigate('VictoryScreen', { tries: tries });
+      } else {
+        setTries(tries + 1);
+        revealTile();
+        setText('');
       }
-    } catch (error) {
-      console.error('Error en registerAttempt:', error);
+    } else {
+      setVisible(true);
+    }
+  };
+
+  const revealStart = () => {
+    let visibleTiles = hiddenTiles
+      .map((tile, index) => (tile ? index : null))
+      .filter((index) => index !== null);
+    if (visibleTiles.length > 0) {
+      let randomIndex =
+        visibleTiles[Math.floor(Math.random() * visibleTiles.length)];
+      setHiddenTiles((prevTiles) =>
+        prevTiles.map((tile, index) => (index === randomIndex ? false : tile))
+      );
     }
   };
 
@@ -105,78 +142,6 @@ export default function Daily({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    const loadFonts = async () => {
-      await Font.loadAsync({
-        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
-      });
-      setFontsLoaded(true);
-      onPress();
-      {
-        name !== 'Guest' && hasPlayed();
-      }
-    };
-    revealStart();
-    if (!fontsLoaded) {
-      loadFonts();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => setVisible(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [visible]);
-
-  const handleGuess = () => {
-    if (text.trim() === '') {
-      setVisible(true);
-      return;
-    }
-
-    if (text.length >= 5 && answer.toLowerCase().includes(text.toLowerCase())) {
-      setIsGuessDisabled(true);
-      setHiddenTiles(Array(9).fill(false));
-
-      if (name !== 'Guest') {
-        registerAttempt(true);
-      }
-
-      navigation.navigate('VictoryScreen', { tries: tries });
-      return;
-    }
-
-    setTries((prevTries) => {
-      if (prevTries + 1 >= 5) {
-        if (name !== 'Guest') {
-          registerAttempt(false);
-        }
-
-        setIsGuessDisabled(true);
-        navigation.navigate('LoseScreen', { answer: answer });
-      }
-      return prevTries + 1;
-    });
-
-    revealTile();
-    setText('');
-  };
-
-  const revealStart = () => {
-    let visibleTiles = hiddenTiles
-      .map((tile, index) => (tile ? index : null))
-      .filter((index) => index !== null);
-    if (visibleTiles.length > 0) {
-      let randomIndex =
-        visibleTiles[Math.floor(Math.random() * visibleTiles.length)];
-      setHiddenTiles((prevTiles) =>
-        prevTiles.map((tile, index) => (index === randomIndex ? false : tile))
-      );
-    }
-  };
-
   const revealTile = () => {
     let visibleTiles = hiddenTiles
       .map((tile, index) => (tile ? index : null))
@@ -200,6 +165,13 @@ export default function Daily({ navigation }) {
         )
       );
     }
+  };
+
+  const removeAccents = (str) => {
+    return str
+      .normalize('NFD') // Descompone los caracteres con acento
+      .replace(/[\u0300-\u036f]/g, '') // Elimina los signos diacríticos
+      .toLowerCase(); // Convierte todo a minúsculas
   };
 
   return (
