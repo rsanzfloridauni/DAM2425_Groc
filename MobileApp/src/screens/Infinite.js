@@ -27,7 +27,7 @@ export default function Infinite({ navigation }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [tries, setTries] = useState(1);
-  const [isGuessDisabled, setIsGuessDisabled] = useState(false);
+  const [isGuessDisabled, setIsGuessDisabled] = useState(true);
   const [imgId, setImgId] = useState('');
   const [items, setItems] = useState([]);
 

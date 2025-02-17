@@ -27,84 +27,6 @@ export default function Daily({ navigation }) {
   const [isGuessDisabled, setIsGuessDisabled] = useState(false);
   const [imgId, setImgId] = useState('');
 
-  const onPress = async () => {
-    try {
-      const response = await fetch(
-        `http://44.199.39.144:8080/imgini/dailyImage?token=${token}`
-      );
-      const data = await response.json();
-
-      setAnswer(data.imageName);
-      setTopic(data.theme);
-
-      if (data.imgBase64 && data.extension) {
-        const imageUri = toImageUri(data.imgBase64, data.extension);
-        setImg(imageUri);
-        setImgId(data.id);
-      }
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  };
-
-  const registerAttempt = async (success) => {
-    const today = new Date().toISOString().split('T')[0];
-
-    const attemptData = {
-      userId: userId,
-      imageId: imgId,
-      attemptDate: today,
-      tries: tries,
-      success: success,
-    };
-
-    try {
-      const response = await fetch(
-        `http://44.199.39.144:8080/imgini/newAttempt?token=${token}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(attemptData),
-        }
-      );
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Error ${response.status}: ${errorMessage}`);
-      }
-    } catch (error) {
-      console.error('Error en registerAttempt:', error);
-    }
-  };
-
-  const hasPlayed = async () => {
-    try {
-      const response = await fetch(
-        `http://44.199.39.144:8080/imgini/getAttempt?token=${token}&username=${name}`
-      );
-
-      if (response.status === 404) {
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${await response.text()}`);
-      }
-
-      const data = await response.json();
-
-      if (data && Object.keys(data).length > 0) {
-        setIsGuessDisabled(true);
-        setHiddenTiles(Array(9).fill(false));
-        setText(answer);
-      }
-    } catch (error) {
-      console.error('Error al recuperar intento:', error);
-    }
-  };
-
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
@@ -140,16 +62,35 @@ export default function Daily({ navigation }) {
     }
   }, [tries]);
 
+  const onPress = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/dailyImage?token=${token}`
+      );
+      const data = await response.json();
+
+      setAnswer(removeAccents(data.imageName));
+      setTopic(data.theme);
+
+      if (data.imgBase64 && data.extension) {
+        const imageUri = toImageUri(data.imgBase64, data.extension);
+        setImg(imageUri);
+        setImgId(data.id);
+      }
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
+  };
+
   const handleGuess = () => {
     if (text.trim() !== '') {
-      if (
-        text.length >= 5 &&
-        answer.toLowerCase().includes(text.toLowerCase())
-      ) {
+      const normalizedText = removeAccents(text); // Normaliza la entrada del usuario
+
+      if (normalizedText.length >= 5 && answer.includes(normalizedText)) {
         setIsGuessDisabled(true);
         setHiddenTiles(Array(9).fill(false));
-        {
-          name !== 'Guest' && registerAttempt(true);
+        if (name !== 'Guest') {
+          registerAttempt(true);
         }
         navigation.navigate('VictoryScreen', { tries: tries });
       } else {
@@ -172,6 +113,32 @@ export default function Daily({ navigation }) {
       setHiddenTiles((prevTiles) =>
         prevTiles.map((tile, index) => (index === randomIndex ? false : tile))
       );
+    }
+  };
+
+  const hasPlayed = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/getAttempt?token=${token}&username=${name}`
+      );
+
+      if (response.status === 404) {
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${await response.text()}`);
+      }
+
+      const data = await response.json();
+
+      if (data && Object.keys(data).length > 0) {
+        setIsGuessDisabled(true);
+        setHiddenTiles(Array(9).fill(false));
+        setText(answer);
+      }
+    } catch (error) {
+      console.error('Error al recuperar intento:', error);
     }
   };
 
@@ -198,6 +165,13 @@ export default function Daily({ navigation }) {
         )
       );
     }
+  };
+
+  const removeAccents = (str) => {
+    return str
+      .normalize('NFD') // Descompone los caracteres con acento
+      .replace(/[\u0300-\u036f]/g, '') // Elimina los signos diacríticos
+      .toLowerCase(); // Convierte todo a minúsculas
   };
 
   return (
