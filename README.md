@@ -59,7 +59,7 @@ The code is completed, its just an Android Studio Issue
 * [PI](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Documentation%20Imgini.pdf)
 
 ### Mockup documentation
-* [Mockup]()
+* [App overview](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Web%20API%20%26%20BDD%20Imgini.pdf)
 
 ## Application Download
 * [Code here](https://github.com/rsanzfloridauni/DAM2425_Groc/tree/main/MobileApp)
