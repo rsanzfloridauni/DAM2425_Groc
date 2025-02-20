@@ -102,7 +102,7 @@ export default function Ranking({ navigation }) {
           renderItem={({ item }) => (
             <Rank object={item} navigation={navigation} key={item.username} />
           )}
-          keyExtractor={(item, index) => item.username.toString()}
+          keyExtractor={(item, index) => `${item.username}-${index}`}
         />
       </View>
       <View style={styles.buttonContainer}>
