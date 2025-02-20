@@ -7,6 +7,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
+import { useCallback } from 'react';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import DrawerButton from '../components/DrawerButton';
@@ -15,15 +16,17 @@ import Logo from '../components/Logo';
 import Rank from '../components/Rank';
 import RankUser from '../components/RankUser';
 import * as Font from 'expo-font';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Ranking({ navigation }) {
-  const { name, picture, theme, token, points, password } = useContext(Context);
+  const { name, picture, theme, token, points, setPoints } =
+    useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [totalPages, setTotalPages] = useState(null);
   const [previousPage, setPreviousPage] = useState(null);
   const [nextPage, setNextPage] = useState(null);
   const [users, setUsers] = useState([]);
+  const apiRankingUrl = `http://44.199.39.144:8080/imgini/ranking?token=${token}&page=${pageIndex}&size=5`;
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -39,18 +42,39 @@ export default function Ranking({ navigation }) {
     }
   }, []);
 
-  useEffect(() => {
-    const apiUrl = `http://44.199.39.144:8080/imgini/ranking?token=${token}&page=${pageIndex}&size=5`;
-    getInfoRanking(apiUrl);
-  }, [pageIndex]);
+  useFocusEffect(
+    useCallback(() => {
+      if (name !== 'Guest') {
+      getUserInfo();
+      }
+      getInfoRanking(apiRankingUrl);
+      console.log(nextPage, previousPage);
+    }, [pageIndex]) // Se ejecuta cada vez que la pantalla gana foco o cambia de página
+  );
+
+
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}`
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setPoints(result.points);
+      } else {
+        console.error('Error obteniendo datos del usuario:', response.status);
+      }
+    } catch (error) {
+      console.log('Error en la petición de usuario:', error);
+    }
+  };
 
   const getInfoRanking = async (url) => {
     try {
       const response = await fetch(url);
       if (response.ok) {
         const result = await response.json();
-        setUsers(result.users.filter(user => user.username !== "Guest"));
-        setTotalPages(result.numPages);
+        setUsers(result.users.filter((user) => user.username !== 'Guest'));
         setPreviousPage(result.previousPage);
         setNextPage(result.nextPage);
       } else {
@@ -103,7 +127,9 @@ export default function Ranking({ navigation }) {
             styles.cardContainer,
             { backgroundColor: theme.card, shadowColor: theme.shadow },
           ]}>
-          <Text style={[styles.title, { color: theme.text }]}>Your Rank 🏆</Text>
+          <Text style={[styles.title, { color: theme.text }]}>
+            Your Rank 🏆
+          </Text>
           <RankUser
             object={{
               picture,
