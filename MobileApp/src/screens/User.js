@@ -70,9 +70,9 @@ useEffect(() => {
         const result = await response.json();
         setExtension(result.extension);
         setProvisionalName(result.username);
-        setProvisionalPwd(result.password);
         setLinkStreak(result.streakLink.replace("localhost", "44.199.39.144"));
         setPoints(result.points);
+        setProvisionalPwd(password);
       }
     } catch (error) {
       console.log(error);
