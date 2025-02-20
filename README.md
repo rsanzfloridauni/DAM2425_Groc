@@ -62,7 +62,9 @@ The code is completed, its just an Android Studio Issue
 * [App overview](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Web%20API%20%26%20BDD%20Imgini.pdf)
 
 ## Application Download
-* [Code here](https://github.com/rsanzfloridauni/DAM2425_Groc/tree/main/MobileApp)
+<p align="center">
+    <img src="./Documentation/Img/Codigo.jpg" alt="ImGini" width="300" height="300">
+</p>
 
 ## Video Demo
 Soon!
