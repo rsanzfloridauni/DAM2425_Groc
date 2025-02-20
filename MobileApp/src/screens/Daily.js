@@ -103,6 +103,38 @@ export default function Daily({ navigation }) {
     }
   };
 
+  const registerAttempt = async (success) => {
+    const today = new Date().toISOString().split('T')[0];
+
+    const attemptData = {
+      userId: userId,
+      imageId: imgId,
+      attemptDate: today,
+      tries: tries,
+      success: success,
+    };
+
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/newAttempt?token=${token}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(attemptData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Error ${response.status}: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error('Error en registerAttempt:', error);
+    }
+  };
+
   const revealStart = () => {
     let visibleTiles = hiddenTiles
       .map((tile, index) => (tile ? index : null))
