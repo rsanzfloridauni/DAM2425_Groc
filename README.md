@@ -67,4 +67,8 @@ The code is completed, its just an Android Studio Issue
 </p>
 
 ## Video Demo
-[![DEMO VIDEO](https://img.youtube.com/vi/s24YbwtTZeY/0.jpg)](https://www.youtube.com/watch?v=s24YbwtTZeY)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=s24YbwtTZeY">
+    <img src="https://img.youtube.com/vi/s24YbwtTZeY/0.jpg" alt="DEMO VIDEO">
+  </a>
+</p>
