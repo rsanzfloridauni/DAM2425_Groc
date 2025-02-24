@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -9,6 +9,9 @@ import Register from './src/screens/Register';
 import Drawer from './src/screens/Drawer';
 import LoadingScreen from './src/screens/LoadingScreen';
 import CalendarScreen from './src/screens/CalendarScreen';
+import VictoryScreen from './src/screens/VictoryScreen';
+import LoseScreen from './src/screens/LoseScreen';
+import Terms from './src/screens/TermsScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,11 +48,26 @@ export default function App() {
             component={LoadingScreen}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="Terms"
+            component={Terms}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Drawer" component={Drawer} />
           <Stack.Group screenOptions={{ presentation: 'modal' }}>
             <Stack.Screen
               name="CalendarScreen"
               component={CalendarScreen}
+              options={{ headerShown: true, headerMode: 'none' }}
+            />
+            <Stack.Screen
+              name="VictoryScreen"
+              component={VictoryScreen}
+              options={{ headerShown: true, headerMode: 'none' }}
+            />
+            <Stack.Screen
+              name="LoseScreen"
+              component={LoseScreen}
               options={{ headerShown: true, headerMode: 'none' }}
             />
           </Stack.Group>

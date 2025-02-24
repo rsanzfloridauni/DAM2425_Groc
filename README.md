@@ -54,6 +54,7 @@ The code is completed, its just an Android Studio Issue
 
 ### Web API Documentation
  * [Web API](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Web%20API%20%26%20BDD%20Imgini.pdf)
+ * [JavaDoc](https://github.com/rsanzfloridauni/DAM2425_Groc/tree/main/API_REST/SpringbootPI/doc)
 
 ### PI Documentation
 * [PI](https://github.com/rsanzfloridauni/DAM2425_Groc/blob/DocumentationPI/Documentation/Documentation%20Imgini.pdf)

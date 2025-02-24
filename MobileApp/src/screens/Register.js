@@ -1,25 +1,24 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  Pressable,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
 import * as Font from 'expo-font';
+import { TextInput } from 'react-native-paper';
 
 export default function Register({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, password, setPassword, setToken, setUserId, theme } =
+    useContext(Context);
+  const [textName, setTextName] = useState('');
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -29,8 +28,53 @@ export default function Register({ navigation }) {
     }
   }, [fontsLoaded]);
 
-  const toApp = () => {
-    navigation.navigate('LoadingScreen');
+  const toApp = async () => {
+    if (!textName || !password) {
+      Alert.alert('Neither the username nor the password can be empty.');
+      return;
+    }
+    if (password === confirmPassword) {
+      setName(textName);
+      try {
+        const response = await fetch(
+          'http://44.199.39.144:8080/imgini/register',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: textName, password }),
+          }
+        );
+
+        const responseText = await response.text();
+        console.log('Server response:', response.status, responseText);
+
+        if (!response.ok) {
+          Alert.alert('Authentication error.');
+          return;
+        }
+
+        setToken(responseText);
+        try {
+          const response2 = await fetch(
+            `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}&password=${password}`
+          );
+          if (response2.ok) {
+            const result = await response2.json();
+            setUserId(result.id);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+        navigation.navigate('LoadingScreen');
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      Alert.alert('Passwords must be the same.');
+    }
   };
 
   const toMain = () => {
@@ -38,41 +82,61 @@ export default function Register({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Register</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Register</Text>
         <TextInput
-          style={styles.input}
+          onChangeText={(text) => setTextName(text)}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
         />
         <TextInput
-          style={styles.input}
+          onChangeText={(text) => setPassword(text)}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!passwordVisible}
+          right={
+            <TextInput.Icon
+              name={passwordVisible ? 'eye-off' : 'eye'}
+              color={theme.isDark ? '#fff' : '#000'}
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            />
+          }
         />
         <TextInput
-          style={styles.input}
+          onChangeText={(text) => setConfirmPassword(text)}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Repeat your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!confirmPasswordVisible}
+          right={
+            <TextInput.Icon
+              name={confirmPasswordVisible ? 'eye-off' : 'eye'}
+              color={theme.isDark ? '#fff' : '#000'}
+              onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+            />
+          }
         />
         <Pressable
           onPress={() => setIsChecked(!isChecked)}
           style={styles.checkboxContainer}>
-          <View style={styles.checkbox}>
+          <View style={[styles.checkbox, { borderColor: theme.text }]}>
             {isChecked && <Text style={styles.checkmark}>✔️</Text>}
           </View>
-          <Text style={styles.checkboxLabel}>
+          <Text style={[styles.checkboxLabel, { color: theme.text }]}>
             I accept the{' '}
             <Text
               style={styles.textLink}
               onPress={() => {
-                navigation.navigate('Drawer', {
-                  screen: 'Terms & Conditions',
-                });
+                setName('');
+                navigation.navigate('Terms');
               }}>
               Terms and Conditions
             </Text>
@@ -82,10 +146,10 @@ export default function Register({ navigation }) {
           onPress={toApp}
           style={[styles.button, !isChecked && styles.disabledButton]}
           disabled={!isChecked}>
-          <Text style={styles.text}>Register</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Register</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
-          <Text style={styles.text}>Go Back</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
         </Pressable>
       </View>
     </View>

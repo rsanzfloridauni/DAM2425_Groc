@@ -1,32 +1,82 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  Pressable,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, Alert } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
+import { TextInput } from 'react-native-paper';
 import Context from './Context';
 import * as Font from 'expo-font';
+import toImageUri from '../utilities/toImageUri';
 
 export default function Login({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const {
+    name,
+    setName,
+    password,
+    setPassword,
+    setPicture,
+    theme,
+    setToken,
+    setUserId,
+    setPoints,
+  } = useContext(Context);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const toApp = () => {
-    navigation.navigate('LoadingScreen');
+  const toApp = async () => {
+    if (!name || !password) {
+      Alert.alert('Neither the username nor the password can be empty.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://44.199.39.144:8080/imgini/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: name, password }),
+      });
+
+      if (!response.ok) {
+        Alert.alert('Authentication error.');
+        return;
+      }
+
+      const token = await response.text();
+      setToken(token);
+
+      try {
+        const response2 = await fetch(
+          `http://44.199.39.144:8080/imgini/userInfo?token=${token}&username=${name}`
+        );
+        if (response2.ok) {
+          const result = await response2.json();
+          setUserId(result.id);
+          setPoints(result.points);
+          if (result.profilePicture === '' || result.profilePicture === null) {
+            setPicture(null);
+          } else {
+            setPicture(toImageUri(result.profilePicture, result.extension));
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      navigation.navigate('LoadingScreen');
+    } catch (error) {
+      console.error('Error en la autenticación:', error);
+    }
   };
 
   const toMain = () => {
+    setName('');
     navigation.navigate('Main');
   };
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans-bold': require('../../assets/fonts/AlegreyaSansSC-Bold.ttf'),
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans-bold': require('../assets/fonts/AlegreyaSansSC-Bold.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -37,26 +87,39 @@ export default function Login({ navigation }) {
   }, [fontsLoaded]);
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={require('../../assets/imgini.png')} />
-      <View style={styles.cardContainer}>
-        <Text style={styles.title}>Login</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Image style={styles.image} source={require('../assets/imgini.png')} />
+      <View
+        style={[
+          styles.cardContainer,
+          { backgroundColor: theme.card, shadowColor: theme.shadow },
+        ]}>
+        <Text style={[styles.title, { color: theme.text }]}>Login</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your username..."
           placeholderTextColor="gray"
+          onChangeText={(text) => setName(text)}
         />
         <TextInput
-          style={styles.input}
+          onChangeText={(text) => setPassword(text)}
+          style={[styles.input, { color: theme.text }]}
           placeholder="Enter your password..."
           placeholderTextColor="gray"
-          secureTextEntry={true}
+          secureTextEntry={!passwordVisible}
+          right={
+            <TextInput.Icon
+              name={passwordVisible ? 'eye' : 'eye-off'}
+              color={theme.isDark ? '#fff' : '#000'}
+              onPress={() => setPasswordVisible(!passwordVisible)}
+            />
+          }
         />
         <Pressable onPress={toApp} style={styles.button}>
-          <Text style={styles.text}>Login</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Login</Text>
         </Pressable>
         <Pressable onPress={toMain} style={styles.button}>
-          <Text style={styles.text}>Go Back</Text>
+          <Text style={[styles.text, { color: theme.text }]}>Go Back</Text>
         </Pressable>
       </View>
     </View>

@@ -8,19 +8,20 @@ import {
 } from 'react-native';
 import { useState, useEffect, useContext } from 'react';
 import Context from './Context';
-import DrawerButton from '../../components/DrawerButton';
-import UserButton from '../../components/UserButton';
+import DrawerButton from '../components/DrawerButton';
+import UserButton from '../components/UserButton';
 import * as Font from 'expo-font';
 
 export default function Logout({ navigation }) {
-  const { name, setName } = useContext(Context);
+  const { name, setName, setPicture, token, setToken, theme } =
+    useContext(Context);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'alegraya-sans': require('../../assets/fonts/AlegreyaSansSC-Regular.ttf'),
+        'alegraya-sans': require('../assets/fonts/AlegreyaSansSC-Regular.ttf'),
       });
       setFontsLoaded(true);
     };
@@ -30,21 +31,48 @@ export default function Logout({ navigation }) {
     }
   }, [fontsLoaded]);
 
+  const onPress = async () => {
+    try {
+      const response = await fetch(
+        `http://44.199.39.144:8080/imgini/logout?token=${token}`,
+        { method: 'GET' }
+      );
+
+      if (response.ok) {
+        console.log('Logout exitoso.');
+        setName('');
+        setToken('');
+        setPicture(null);
+        navigation.navigate('Main');
+      } else {
+        console.log(
+          'Error al cerrar sesión. Código de estado:',
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}>
       <DrawerButton navigation={navigation} />
-      <UserButton navigation={navigation} />
-      <View style={styles.textContainer}>
-        <Image
-          style={styles.image}
-          source={require('../../assets/imgini.png')}
-        />
-        <Text style={styles.text}>Leaving already?</Text>
-        <Text style={styles.text}>Don't forget to keep your streak!</Text>
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.navigate('Main')}>
-          <Text style={styles.buttonText}>Log Out</Text>
+      {name !== 'Guest' && <UserButton navigation={navigation} />}
+      <View
+        style={[styles.textContainer, { backgroundColor: theme.background }]}>
+        <Image style={styles.image} source={require('../assets/imgini.png')} />
+        <Text style={[styles.text, { color: theme.text }]}>
+          Leaving already?
+        </Text>
+        <Text style={[styles.text, { color: theme.text }]}>
+          Don't forget to keep your streak!
+        </Text>
+        <Pressable style={styles.button} onPress={onPress}>
+          <Text style={[styles.buttonText, { color: theme.text }]}>
+            Log Out
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
