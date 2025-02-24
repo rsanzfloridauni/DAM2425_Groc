@@ -67,4 +67,4 @@ The code is completed, its just an Android Studio Issue
 </p>
 
 ## Video Demo
-Soon!
+[![DEMO VIDEO](https://img.youtube.com/vi/s24YbwtTZeY/0.jpg)](https://www.youtube.com/watch?v=s24YbwtTZeY)
