@@ -73,3 +73,10 @@ The code is completed, its just an Android Studio Issue
     <img src="https://img.youtube.com/vi/s24YbwtTZeY/0.jpg" alt="DEMO VIDEO">
   </a>
 </p>
+
+## Elevator Pitch
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=s6r9yqCy1Ok">
+    <img src="https://img.youtube.com/vi/s6r9yqCy1Ok/0.jpg" alt="ELEVATOR PITCH">
+  </a>
+</p>
